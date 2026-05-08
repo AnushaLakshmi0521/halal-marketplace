@@ -4,8 +4,8 @@ import green from "../assets/green1.jpg";   // ✅ NEW IMAGE
 import "./Home.css";
 
 /* IMAGES */
-import all from "../assets/categories/all.jpg";
-import meat from "../assets/categories/meat.jpg";
+import all from "../assets/categories/all.jpg";g
+import meat from "../assets/categories/Meat.jpg";
 import organic from "../assets/categories/organic.jpg";
 import pantry from "../assets/categories/pantry.jpg";
 import snacks from "../assets/categories/snacks.jpg";
