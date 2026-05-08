@@ -10,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-9jue_4d7uha*2q6z6x)qfc#8&o1z@3(^h9&f_%+^7&dj1#cw0a'
 DEBUG = True
-#ALLOWED_HOSTS = []
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "unwound-dimple-esquire.ngrok-free.dev",
-]
+ALLOWED_HOSTS = ["*"]
+#ALLOWED_HOSTS = [
+  #  "localhost",
+   # "127.0.0.1",
+   # "unwound-dimple-esquire.ngrok-free.dev",
+#]
 
 
 INSTALLED_APPS = [
