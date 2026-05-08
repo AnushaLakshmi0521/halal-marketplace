@@ -1,0 +1,248 @@
+
+/* PAGE */
+.wrapper {
+  display: flex;
+  gap: 25px;
+  padding: 30px;
+  background: #f9fafb;
+  animation: fadeIn 0.5s ease;
+}
+
+/* FADE */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: white;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+.sidebar h3 {
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+/* SEARCH */
+.input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #22c55e;
+}
+
+/* CATEGORY */
+.categoryItem {
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.categoryItem:hover {
+  background: #ecfdf5;
+  transform: translateX(4px);
+}
+
+.activeCategory {
+  background: #dcfce7;
+  font-weight: 600;
+}
+
+/* PRODUCTS */
+.container {
+  flex: 1;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* GRID (smaller cards) */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 16px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
+
+/* IMAGE */
+.image {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.08);
+}
+
+/* CONTENT */
+.content {
+  padding: 10px;
+}
+
+.content h3 {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+/* DESC */
+.desc {
+  font-size: 12px;
+  color: #666;
+  height: 28px;
+  overflow: hidden;
+}
+
+/* PRICE */
+.price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #16a34a;
+  margin-top: 4px;
+}
+
+/* BADGE */
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  margin-top: 6px;
+}
+
+/* BUTTON */
+.button {
+  width: 100%;
+  padding: 7px;
+  margin-top: 8px;
+  font-size: 13px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(34,197,94,0.3);
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+/* CART */
+.cartBox {
+  margin-top: 25px;
+  background: white;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+.cartItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cartName {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.cartPrice {
+  font-size: 11px;
+  color: #666;
+}
+
+/* QTY */
+.qtyBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qtyBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: #16a34a;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.qtyBtn:hover {
+  transform: scale(1.15);
+}
+
+.qtyBtn:active {
+  transform: scale(0.9);
+}
+
+.qtyText {
+  font-weight: 600;
+  font-size: 13px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* PAY BUTTON */
+.payBtn {
+  width: 100%;
+  padding: 10px;
+  background: #16a34a;
+  color: white;
+  border-radius: 8px;
+  margin-top: 10px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.payBtn:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}

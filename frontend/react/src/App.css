@@ -1,0 +1,136 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* MAIN CONTAINER */
+.home {
+  width: 100%;
+  height: calc(100vh - 60px);
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  position: relative;
+}
+
+/* 🌿 LIGHT OVERLAY */
+.home::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 80, 0, 0.25);
+  z-index: 0;
+}
+
+/* LEFT POPUP */
+.popup {
+  position: absolute;
+  left: 80px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  padding: 40px;
+  border-radius: 16px;
+  max-width: 1000px;
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+
+  z-index: 1;
+}
+
+/* TEXT */
+.popup h1 {
+  font-size: 2.8rem;
+  color: #ffffff;
+  line-height: 0.90;
+}
+
+.popup p {
+  margin: 15px 0;
+  color: #d1fae5;
+  font-size: 16px;
+}
+
+/* BUTTON */
+.btn {
+  padding: 12px 22px;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* RIGHT IMAGE */
+.right-img {
+  position: absolute;
+  right: 80px;
+  bottom: 120px;
+
+  width: 420px;
+  height: auto;
+
+  object-fit: contain;
+  filter: drop-shadow(0 15px 30px rgba(0,0,0,0.35));
+
+  /* 👇 ONLY SCALE ANIMATION */
+  animation: scaleIn 0.8s ease forwards;
+
+  z-index: 1;
+}
+
+/* SCALE ANIMATION */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* HOVER SCALE */
+.right-img:hover {
+  transform: scale(1.05);
+  transition: 0.3s ease;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .popup {
+    left: 20px;
+    right: 20px;
+    padding: 25px;
+  }
+
+  .popup h1 {
+    font-size: 2rem;
+  }
+
+  .right-img {
+    width: 260px;
+    right: 20px;
+    bottom: 80px;
+  }
+}

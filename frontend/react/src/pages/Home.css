@@ -1,0 +1,278 @@
+.home {
+  width: 100%;
+  background: #f9fafb;
+}
+
+/* ================= HERO ================= */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 45vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* VIDEO BACKGROUND */
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* DARK OVERLAY */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* HERO CONTENT */
+.hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: white;
+  max-width: 520px;
+  padding: 20px;
+}
+
+.hero-content h1 {
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.hero-content p {
+  font-size: 15px;
+  opacity: 0.9;
+  margin-bottom: 18px;
+}
+
+.hero-content button {
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  background: #16a34a;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+  position: relative;
+  z-index: 4;
+}
+
+.hero-content button:hover {
+  background: #12833a;
+  transform: scale(1.05);
+}
+
+/* ================= CATEGORY SECTION ================= */
+.carousel-section {
+  width: 100%;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 45px; /* ✅ space for arrows */
+}
+
+/* CAROUSEL */
+.carousel {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 15px 10px;
+  scroll-snap-type: x mandatory;
+  width: 100%;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* CATEGORY CIRCLE */
+.circle {
+  min-width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  transition: 0.3s ease;
+
+  scroll-snap-align: center;
+
+  pointer-events: auto;
+}
+
+.circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.circle p {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+
+.circle:hover {
+  transform: scale(1.08);
+}
+
+/* ================= NAV BUTTONS ================= */
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #16a34a;
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+/* LEFT */
+.nav-btn.left {
+  left: 10px;
+}
+
+/* RIGHT */
+.nav-btn.right {
+  right: 10px;
+}
+
+/* ================= FIX CLICK ISSUES ================= */
+.carousel-section,
+.carousel-wrapper,
+.carousel {
+  position: relative;
+  z-index: 50;
+}
+
+.circle {
+  position: relative;
+  z-index: 60;
+}
+
+.hero,
+.hero::after,
+.hero-video {
+  pointer-events: none;
+}
+.hero-content button {
+  pointer-events: auto;  /* ✅ re-enable click */
+  position: relative;
+  z-index: 10;
+}
+.hero-content-box {
+  position: relative;
+  z-index: 3;
+
+  text-align: center;
+  color: white;
+
+  max-width: 520px;
+  padding: 25px 30px;
+
+  /* ✅ TEXT BOX STYLE */
+  background: rgba(123, 159, 127, 0.35);
+  backdrop-filter: blur(6px);
+
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+.hero {
+  position: relative;
+  width: 100%;
+  height: 45vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ✅ KEY FIX: shift image from left to center focus */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  /* 👇 THIS controls left → center shift */
+  object-position: center;
+  filter:blur(4px);
+ 
+  background:linear-gradient(to right,
+  rgba(0,0,0,0.4),
+  rgba(0,0,0,0.2),
+  rgba(0,0,0,0.1)); /* rgba(0,0,0,0.25); */
+
+  z-index: 1;
+}
+
+/* overlay */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 2;
+}
+
+/* content */
+.hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: white;
+}
+/* ================= GLASS EFFECT ONLY (NO LAYOUT CHANGE) ================= */
+.hero-content {
+  background: rgba(255, 255, 255, 0.15); /* soft glass */
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  padding:24px 32px;
+}
