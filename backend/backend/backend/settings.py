@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from datetime import timedelta
 import cloudinary
@@ -7,18 +6,19 @@ import cloudinary.api
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 SECRET_KEY = 'django-insecure-9jue_4d7uha*2q6z6x)qfc#8&o1z@3(^h9&f_%+^7&dj1#cw0a'
 
 DEBUG = False
-#ALLOWED_HOSTS = ["*"]
+
 ALLOWED_HOSTS = [
     "halal-marketplace.onrender.com",
     "localhost",
     "127.0.0.1"
 ]
 
-
+# =========================
+# INSTALLED APPS
+# =========================
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,9 +26,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-   
 
     'products',
+    'accounts',
+
     'corsheaders',
 
     'cloudinary',
@@ -36,14 +37,11 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',  # ✅ REQUIRED FOR REFRESH ROTATION
-
-    'accounts',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
-
 # =========================
-# JWT AUTH CONFIG (FINAL)
+# REST FRAMEWORK
 # =========================
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -54,9 +52,12 @@ REST_FRAMEWORK = {
     ),
 }
 
+# =========================
+# JWT SETTINGS
+# =========================
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),   # short-lived access token
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),      # long-lived refresh token
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -64,9 +65,8 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-
 # =========================
-# CLOUDINARY CONFIG
+# CLOUDINARY
 # =========================
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": "doihibg9v",
@@ -83,7 +83,9 @@ cloudinary.config(
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-
+# =========================
+# MIDDLEWARE
+# =========================
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -95,27 +97,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'backend.urls'
+# =========================
+# IMPORTANT FIX (YOUR ISSUE)
+# =========================
+ROOT_URLCONF = 'backend.backend.backend.urls'
 
+WSGI_APPLICATION = 'backend.backend.backend.wsgi.application'
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
-WSGI_APPLICATION = 'backend.wsgi.application'
-
-
+# =========================
+# DATABASE
+# =========================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -123,16 +114,22 @@ DATABASES = {
     }
 }
 
-
+# =========================
+# CORS
+# =========================
 CORS_ALLOW_ALL_ORIGINS = True
 
-
+# =========================
+# INTERNATIONALIZATION
+# =========================
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-
+# =========================
+# STATIC
+# =========================
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
