@@ -1,0 +1,8 @@
+Django
+djangorestframework
+gunicorn
+django-cors-headers
+cloudinary
+django-cloudinary-storage
+djangorestframework-simplejwt
+psycopg2-binary
