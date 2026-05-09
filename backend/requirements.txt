@@ -6,3 +6,4 @@ cloudinary
 django-cloudinary-storage
 djangorestframework-simplejwt
 psycopg2-binary
+razorpay
