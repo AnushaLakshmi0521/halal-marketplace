@@ -9,13 +9,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = 'django-insecure-9jue_4d7uha*2q6z6x)qfc#8&o1z@3(^h9&f_%+^7&dj1#cw0a'
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
-#ALLOWED_HOSTS = [
-  #  "localhost",
-   # "127.0.0.1",
-   # "unwound-dimple-esquire.ngrok-free.dev",
-#]
+
+DEBUG = False
+#ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "halal-marketplace.onrender.com",
+    "localhost",
+    "127.0.0.1"
+]
 
 
 INSTALLED_APPS = [
@@ -25,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'gunicorn',
 
     'products',
     'corsheaders',
