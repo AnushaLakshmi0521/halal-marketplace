@@ -4,7 +4,7 @@ import "./Orders.css";
 function Orders() {
   const [orders, setOrders] = useState([]);
 
-  const API_ORDERS = "http://127.0.0.1:8000/products/orders/";
+  const API_ORDERS = /*http://127.0.0.1:8000*/"https://halal-marketplace.onrender.com/products/orders/";
 
   useEffect(() => {
     const loadOrders = async () => {

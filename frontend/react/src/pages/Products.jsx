@@ -16,8 +16,8 @@ function Products() {
 
   const sidebarRefs = useRef({});
 
-  const API_PRODUCTS ="http://127.0.0.1:8000/products/products/";
-  const API_CART = "http://127.0.0.1:8000/products/cart/"; // ✅ FIXED
+  const API_PRODUCTS =/*http://127.0.0.1:8000*/"https://halal-marketplace.onrender.com/products/products/";
+  const API_CART = /*http://127.0.0.1:8000*/"https://halal-marketplace.onrender.com/products/cart/"; // ✅ FIXED
 
   const getToken = () => localStorage.getItem("access");
 

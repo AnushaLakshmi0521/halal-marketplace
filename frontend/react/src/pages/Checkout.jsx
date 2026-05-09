@@ -11,9 +11,9 @@ function Checkout() {
   });
 
   // ✅ APIs
-  const API_CART = "http://127.0.0.1:8000/products/cart/";
-  const API_PAYMENT = "http://127.0.0.1:8000/products/create-payment/";
-  const API_VERIFY = "http://127.0.0.1:8000/products/verify-payment/";
+  const API_CART = /*http://127.0.0.1:8000*/"https://halal-marketplace.onrender.com/products/cart/";
+  const API_PAYMENT = /*"http://127.0.0.1:8000/products/create-payment/";*/"https://halal-marketplace.onrender.com/products/create-payment/"
+  const API_VERIFY = "https://halal-marketplace.onrender.com/products/verify-payment/";
 
   const getToken = () => localStorage.getItem("access");
 

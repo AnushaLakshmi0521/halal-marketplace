@@ -10,7 +10,7 @@ function Login() {
   const { login } = useAuth(); // ✅ use context
 
   const handleLogin = async () => {
-    const res = await fetch("http://127.0.0.1:8000/accounts/login/", {
+    const res = await fetch("https://halal-marketplace.onrender.com/accounts/login/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
