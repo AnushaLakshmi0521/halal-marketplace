@@ -1,9 +1,11 @@
+
 from pathlib import Path
 from datetime import timedelta
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -16,7 +18,6 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1"
 ]
-
 
 # =========================
 # INSTALLED APPS
@@ -91,17 +92,18 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-        'whitenoise.middleware.WhiteNoiseMiddleware', 
 ]
 
 # =========================
-# IMPORTANT FIX (YOUR ISSUE)
+# ROOT URLS / WSGI
 # =========================
 ROOT_URLCONF = 'backend.urls'
 
@@ -111,12 +113,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # DATABASE
 # =========================
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600
+    )
 }
-
 # =========================
 # CORS
 # =========================
@@ -126,18 +127,30 @@ CORS_ALLOW_ALL_ORIGINS = True
 # INTERNATIONALIZATION
 # =========================
 LANGUAGE_CODE = 'en-us'
+
 TIME_ZONE = 'UTC'
+
 USE_I18N = True
+
 USE_TZ = True
 
 # =========================
-# STATIC
+# STATIC FILES
 # =========================
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = '/static/'
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# =========================
+# DEFAULT AUTO FIELD
+# =========================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# =========================
+# TEMPLATES
+# =========================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
