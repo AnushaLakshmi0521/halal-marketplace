@@ -113,8 +113,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # DATABASE
 # =========================
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+    'default': dj_database_url.parse(
+        "postgresql://halal_user:71MPAMm7BWJ7zjiTKI4LKUtYoFqAdBYc@dpg-d827fjt0lvsc73c63j90-a.oregon-postgres.render.com/halal_marketplace",
         conn_max_age=600
     )
 }
