@@ -137,13 +137,30 @@ class Order(models.Model):
         null=True
     )
 
+    # =========================
     # TIMESTAMPS
+    # =========================
     created_at = models.DateTimeField(
         auto_now_add=True
     )
 
     updated_at = models.DateTimeField(
         auto_now=True
+    )
+
+    packed_at = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+
+    shipped_at = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+
+    out_for_delivery_at = models.DateTimeField(
+        blank=True,
+        null=True
     )
 
     delivered_at = models.DateTimeField(
@@ -156,10 +173,21 @@ class Order(models.Model):
         null=True
     )
 
+    # =========================
     # AUTO TIMESTAMP HANDLER
+    # =========================
     def save(self, *args, **kwargs):
 
         from django.utils.timezone import now
+
+        if self.status == "Packed" and not self.packed_at:
+            self.packed_at = now()
+
+        if self.status == "Shipped" and not self.shipped_at:
+            self.shipped_at = now()
+
+        if self.status == "Out for Delivery" and not self.out_for_delivery_at:
+            self.out_for_delivery_at = now()
 
         if self.status == "Delivered" and not self.delivered_at:
             self.delivered_at = now()
