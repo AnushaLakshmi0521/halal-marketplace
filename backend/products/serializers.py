@@ -47,8 +47,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     def get_product_image(self, obj):
         if obj.product.image:
-            return obj.product.image.url
-        return None
+            return str(obj.product.image.url)
+        return ""
 
     class Meta:
         model = OrderItem
@@ -94,6 +94,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
             "created_at",
             "updated_at",
+
+            "packed_at",
+            "shipped_at",
+            "out_for_delivery_at",
+
             "delivered_at",
             "cancelled_at",
 
