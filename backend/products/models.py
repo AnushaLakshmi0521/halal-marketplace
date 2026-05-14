@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 # PRODUCT MODEL
 # =========================
 class Product(models.Model):
+
     CATEGORY_CHOICES = [
         ("Ethical Meats", "Ethical Meats"),
         ("Fresh Organics", "Fresh Organics"),
@@ -22,14 +23,27 @@ class Product(models.Model):
     ]
 
     name = models.CharField(max_length=200)
-    price = models.FloatField()
-    description = models.TextField()
-    halal_certified = models.BooleanField(default=True)
-    ingredients = models.TextField()
-    source = models.CharField(max_length=200)
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
 
-    image = CloudinaryField('image', blank=True, null=True)
+    price = models.FloatField()
+
+    description = models.TextField()
+
+    halal_certified = models.BooleanField(default=True)
+
+    ingredients = models.TextField()
+
+    source = models.CharField(max_length=200)
+
+    category = models.CharField(
+        max_length=100,
+        choices=CATEGORY_CHOICES
+    )
+
+    image = CloudinaryField(
+        'image',
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return self.name
@@ -39,31 +53,104 @@ class Product(models.Model):
 # CART MODEL
 # =========================
 class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
 
-
-# =========================
-# ORDER MODEL (UPDATED)
-# =========================
-class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # ✅ IMPORTANT
-
-    name = models.CharField(max_length=200)
-    address = models.TextField()
-    phone = models.CharField(max_length=15)
-
-    total_amount = models.FloatField()
-
-    payment_id = models.CharField(max_length=255, null=True, blank=True)  # ✅ Razorpay
-
-    status = models.CharField(
-        max_length=50,
-        default="Placed"   # later: Paid, Shipped, Delivered
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
     )
 
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE
+    )
+
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name}"
+
+
+# =========================
+# ORDER MODEL
+# =========================
+class Order(models.Model):
+
+    STATUS_CHOICES = [
+        ("Placed", "Placed"),
+        ("Packed", "Packed"),
+        ("Shipped", "Shipped"),
+        ("Out for Delivery", "Out for Delivery"),
+        ("Delivered", "Delivered"),
+        ("Cancelled", "Cancelled"),
+    ]
+
+    PAYMENT_CHOICES = [
+        ("Pending", "Pending"),
+        ("Paid", "Paid"),
+        ("Failed", "Failed"),
+    ]
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    # CUSTOMER INFO
+    name = models.CharField(max_length=200)
+
+    address = models.TextField()
+
+    phone = models.CharField(max_length=15)
+
+    # PAYMENT
+    payment_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    payment_status = models.CharField(
+        max_length=20,
+        choices=PAYMENT_CHOICES,
+        default="Pending"
+    )
+
+    # ORDER STATUS
+    status = models.CharField(
+        max_length=50,
+        choices=STATUS_CHOICES,
+        default="Placed"
+    )
+
+    # TOTAL
+    total_amount = models.FloatField()
+
+    # TRACKING
+    tracking_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    estimated_delivery = models.DateField(
+        blank=True,
+        null=True
+    )
+
+    # TIMESTAMPS
     created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    delivered_at = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+
+    cancelled_at = models.DateTimeField(
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return f"Order #{self.id} - {self.user.username}"
@@ -73,15 +160,21 @@ class Order(models.Model):
 # ORDER ITEMS
 # =========================
 class OrderItem(models.Model):
+
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
         related_name="items"
     )
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE
+    )
 
     quantity = models.IntegerField()
-    price = models.FloatField()  # ✅ store price at time of purchase
+
+    price = models.FloatField()
 
     def __str__(self):
         return f"{self.product.name} x {self.quantity}"
