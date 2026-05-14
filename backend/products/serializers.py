@@ -46,12 +46,15 @@ class OrderItemSerializer(serializers.ModelSerializer):
     product_image = serializers.SerializerMethodField()
 
     def get_product_image(self, obj):
-        try obj.product.image:
+
+    try:
+        if obj.product.image:
             return obj.product.image.build_url()
-        except:
-            pass
-        
-        return "https://via.placeholder.com/100"
+
+    except:
+        pass
+
+    return "https://via.placeholder.com/100"
     class Meta:
         model = OrderItem
         fields = [
