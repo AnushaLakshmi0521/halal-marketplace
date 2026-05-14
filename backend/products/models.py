@@ -138,9 +138,13 @@ class Order(models.Model):
     )
 
     # TIMESTAMPS
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
 
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
 
     delivered_at = models.DateTimeField(
         blank=True,
@@ -151,6 +155,19 @@ class Order(models.Model):
         blank=True,
         null=True
     )
+
+    # AUTO TIMESTAMP HANDLER
+    def save(self, *args, **kwargs):
+
+        from django.utils.timezone import now
+
+        if self.status == "Delivered" and not self.delivered_at:
+            self.delivered_at = now()
+
+        if self.status == "Cancelled" and not self.cancelled_at:
+            self.cancelled_at = now()
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Order #{self.id} - {self.user.username}"
