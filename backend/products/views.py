@@ -71,6 +71,7 @@ def get_products(request):
             "ingredients": p.ingredients,
             "source": p.source,
             "category": p.category,
+            "estimated_delivery": order.estimated_delivery,
             "image": p.image.url if p.image else None
         })
 
