@@ -1,13 +1,22 @@
+
 import { useEffect, useState } from "react";
 import "./Orders.css";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
+  const [expandedOrder, setExpandedOrder] = useState(null);
 
-  const API_ORDERS = /*http://127.0.0.1:8000*/"https://halal-marketplace.onrender.com/products/orders/";
+  const API_ORDERS =
+    "https://halal-marketplace.onrender.com/products/orders/";
+
+  const getImage = (img) => {
+    if (!img) return "https://via.placeholder.com/100";
+    if (img.startsWith("http")) return img;
+    return `https://res.cloudinary.com/doihibg9v/${img}`;
+  };
 
   useEffect(() => {
-    const loadOrders = async () => {
+    const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("access");
 
@@ -17,14 +26,7 @@ function Orders() {
           },
         });
 
-        if (!res.ok) {
-          console.log("Orders fetch failed");
-          setOrders([]);
-          return;
-        }
-
         const data = await res.json();
-
         setOrders(Array.isArray(data) ? data : []);
       } catch (err) {
         console.log(err);
@@ -32,142 +34,140 @@ function Orders() {
       }
     };
 
-    loadOrders();
+    fetchOrders();
   }, []);
+
+  const toggleOrder = (id) => {
+    setExpandedOrder(expandedOrder === id ? null : id);
+  };
 
   return (
     <div className="ordersPage">
 
-      {/* HEADER */}
       <div className="ordersHeader">
-        <h1>📦 My Orders</h1>
-        <p>Track and manage your recent purchases</p>
+        <h1>📦 Your Orders</h1>
+        <p>Track, view and manage your purchases</p>
       </div>
 
-      {/* EMPTY */}
       {orders.length === 0 ? (
         <div className="emptyOrders">
-          <h2>No Orders Yet</h2>
-
-          <p>
-            Your purchased items will appear here after checkout.
-          </p>
+          <h2>No Orders Found</h2>
         </div>
       ) : (
         <div className="ordersGrid">
 
-          {orders.map((order) => (
-            <div key={order.id} className="orderCard">
+          {orders.map((order) => {
+            const isOpen = expandedOrder === order.id;
 
-              {/* TOP */}
-              <div className="orderTop">
+            return (
+              <div key={order.id} className="orderCard">
 
-                <div>
-                  <h3>Order #{order.id}</h3>
-
-                  <p className="date">
-                    {new Date(order.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-
-                <span className="status">
-                  ✔ Paid
-                </span>
-
-              </div>
-
-              <div className="divider"></div>
-
-              {/* ITEMS */}
-              <div className="itemsSection">
-
-                {order.items?.map((item, index) => (
-                  <div key={index} className="orderItem">
-
-                    <div className="itemLeft">
-
-                      <img
-  src={
-    item.image
-      ? item.image.startsWith("http")
-        ? item.image
-        : `https://res.cloudinary.com/doihibg9v${item.image}`
-      : "https://via.placeholder.com/100"
-  }
-  alt={item.name}
-  className="itemImage"
-/>
-
-<div>
-  <h4>{item.name}</h4>
-
-  <p>
-    Quantity: {item.quantity}
-  </p>
-</div>
-
-                    </div>
-
-                    <h3 className="itemPrice">
-                      ₹ {item.price}
-                    </h3>
-
+                {/* TOP */}
+                <div className="orderTop">
+                  <div>
+                    <h3>Order #{order.id}</h3>
+                    <p>
+                      {order.created_at
+                        ? new Date(order.created_at).toDateString()
+                        : ""}
+                    </p>
                   </div>
-                ))}
 
-              </div>
-
-              <div className="divider"></div>
-
-              {/* ADDRESS */}
-              <div className="addressBox">
-
-                <div className="addressTitle">
-                  🚚 Delivery Address
+                  <span className={`status ${order.status || "processing"}`}>
+                    {order.status || "Processing"}
+                  </span>
                 </div>
 
-                <p>
-                  {order.address || "Address not available"}
-                </p>
+                <div className="divider"></div>
 
-              </div>
-
-              {/* TIMELINE */}
-              <div className="timeline">
-
-                <div className="timelineStep">
-                  ✔ Order Placed
+                {/* PRODUCT PREVIEW */}
+                <div className="previewItems">
+                  {(order.items || []).slice(0, 2).map((item, i) => (
+                    <div key={i} className="previewItem">
+                      <img src={getImage(item.image)} />
+                      <span>{item.name}</span>
+                    </div>
+                  ))}
                 </div>
 
-                <div className="timelineStep">
-                  ✔ Payment Confirmed
-                </div>
+                {/* BUTTON */}
+                <button
+                  className="viewBtn"
+                  onClick={() => toggleOrder(order.id)}
+                >
+                  {isOpen ? "Hide Details" : "View Order Details"}
+                </button>
 
-                <div className="timelineStep">
-                  🚚 Processing
-                </div>
+               {/* EXPANDED SECTION */}
+{isOpen && (
+  <div className="expandedSection">
+
+    {/* TRACKING BAR */}
+  <div className="trackingBar">
+
+  <div
+    className={`step 
+    ${["Placed", "Shipped", "Delivered"].includes(order.status) ? "active" : ""}
+    ${order.status === "Placed" ? "current" : ""}
+    `}
+  >
+    Order Placed
+  </div>
+
+  <div
+    className={`step 
+    ${["Shipped", "Delivered"].includes(order.status) ? "active" : ""}
+    ${order.status === "Shipped" ? "current" : ""}
+    `}
+  >
+    Shipped
+  </div>
+
+  <div
+    className={`step 
+    ${order.status === "Delivered" ? "active deliveredDone current" : ""}
+    `}
+  >
+    Delivered
+  </div>
+
+  <div className={`progressLine ${order.status?.toLowerCase()}`}></div>
+
+</div>
+    {/* ITEMS */}
+    <div className="itemsSection">
+      {(order.items || []).map((item, index) => (
+        <div key={index} className="orderItem">
+          <img src={getImage(item.image)} />
+          <div>
+            <h4>{item.name}</h4>
+            <p>Qty: {item.quantity}</p>
+          </div>
+          <b>₹{item.price}</b>
+        </div>
+      ))}
+    </div>
+
+    {/* ADDRESS */}
+    <div className="addressBox">
+      <b>Delivery Address</b>
+      <p>{order.address}</p>
+    </div>
+
+    {/* TOTAL */}
+    <div className="totalBox">
+      <h3>Total: ₹{order.total_amount}</h3>
+    </div>
+
+  </div>
+)}
 
               </div>
-
-              <div className="divider"></div>
-
-              {/* TOTAL */}
-              <div className="orderBottom">
-
-                <h3>Total</h3>
-
-                <h2>
-                  ₹ {order.total_amount}
-                </h2>
-
-              </div>
-
-            </div>
-          ))}
+            );
+          })}
 
         </div>
       )}
-
     </div>
   );
 }

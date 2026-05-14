@@ -1,62 +1,52 @@
 /* =========================
-   ORDERS PAGE
+   PREMIUM AMAZON STYLE ORDERS UI
 ========================= */
 
 .ordersPage {
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #26462f, #89c08e);
-  padding: 35px 15px;
+  background: #244621;
+  padding: 25px 12px;
 }
 
 /* HEADER */
 .ordersHeader {
   text-align: center;
-  margin-bottom: 35px;
+  margin-bottom: 20px;
 }
 
 .ordersHeader h1 {
-  font-size: 32px;
-  color: #10b850;
-  margin-bottom: 8px;
+  font-size: 26px;
   font-weight: 700;
+  color: #f5f8ff;
 }
 
 .ordersHeader p {
-  color: #f5efef;
-  font-size: 15px;
+  font-size: 16px;
+  color: #cbcdd0;
 }
 
 /* GRID */
 .ordersGrid {
-  display: grid;
-  gap: 18px;
-  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 650px;
   margin: auto;
 }
 
-/* CARD */
+/* CARD (CLEAN AMAZON STYLE) */
 .orderCard {
-  background:
-    linear-gradient(rgb(88, 142, 63), rgb(104, 135, 79)) padding-box,
-    linear-gradient(135deg, #0a7230, #1e8644) border-box;
-
-  border: 2px solid transparent;
-
-  border-radius: 18px;
-
-  padding: 16px;
-
-  max-width:750px ;
-
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-
-  transition: 0.3s ease;
+  background: rgb(225, 223, 223);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  border: 1px solid #eef0f3;
+  transition: 0.2s ease;
 }
 
 .orderCard:hover {
-  transform: translateY(-4px);
-
-  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
 /* TOP */
@@ -64,226 +54,271 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 15px;
 }
 
 .orderTop h3 {
   font-size: 18px;
-  color: #f5f8fc;
+  font-weight: 700;
+  color: #111;
 }
 
 .date {
-  margin-top: 5px;
-  color: #d3d6dc;
-  font-size: 12px;
+  font-size: 14px;
+  color: #6b7280;
 }
 
-/* STATUS */
+/* STATUS BADGE */
 .status {
-  background: #dcfce7;
-  color: #15803d;
-
-  padding: 6px 14px;
-
-  border-radius: 999px;
-
-  font-weight: 700;
   font-size: 11px;
-
-  white-space: nowrap;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #16a34a;
 }
 
 /* DIVIDER */
 .divider {
   height: 1px;
-  background: #e5e7eb;
-  margin: 16px 0;
+  background: #f1f5f9;
+  margin: 10px 0;
 }
 
-/* ITEMS */
-.itemsSection {
+/* PREVIEW ITEMS */
+.previewItems {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
+.previewItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  color: #0f0f11;
+}
+
+.previewItem img {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+/* BUTTON (AMAZON STYLE) */
+.viewBtn {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.viewBtn:hover {
+  background: #f9fafb;
+}
+
+/* EXPANDED */
+.expandedSection {
+  margin-top: 12px;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ORDER ITEM */
 .orderItem {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-
-  gap: 14px;
-
-  background: #f9fafb;
-
-  padding: 8px 10px;
-
-  border-radius: 14px;
-
-  transition: 0.25s;
+  padding: 8px 0;
 }
 
-.orderItem:hover {
-  background: #f3f4f6;
-}
-
-.itemLeft {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.itemImage {
-  width: 50px;
-  height: 50px;
-
-  object-fit: cover;
-
-  border-radius: 10px;
-
-  border: 2px solid #dcfce7;
+.orderItem img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
 }
 
 .orderItem h4 {
-  margin-bottom: 4px;
-  font-size: 16px;
-  color: #000000;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .orderItem p {
+  font-size: 11px;
   color: #6b7280;
-  font-size: 13px;
-  font-weight: 400;
-}
-
-.itemPrice {
-  font-size: 18px;
-  font-weight: 700;
-  color: #166534;
 }
 
 /* ADDRESS */
 .addressBox {
-  background: #ced3cd;
-
-  border-left: 4px solid #16a34a;
-
-  padding: 12px;
-
-  border-radius: 12px;
-
-  margin-top: 12px;
-}
-
-.addressTitle {
-  font-weight: 900;
-  margin-bottom: 5px;
-  color: #166534;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.addressBox p {
-  font-size: 13px;
-  color: #555;
-  font-weight: 400;
-}
-
-/* TIMELINE */
-.timeline {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 14px;
-}
-
-.timelineStep {
-  background: #474f38;
-  color: #afb3a9;
-
-  padding: 5px 10px;
-
-  border-radius: 999px;
-
-  font-size: 15px;
-  font-weight: 600;
+  margin-top: 10px;
+  background: #f9fafb;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  color: #374151;
 }
 
 /* TOTAL */
-.orderBottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  margin-top: 8px;
+.totalBox {
+  margin-top: 10px;
+  text-align: right;
 }
 
-.orderBottom h3 {
-  font-size: 16px;
+.totalBox h3 {
+  font-size: 15px;
   color: #111827;
-}
-
-.orderBottom h2 {
-  font-size: 22px;
-  color: #056629;
-  font-weight: 800;
 }
 
 /* EMPTY */
 .emptyOrders {
-  max-width: 500px;
+  max-width: 420px;
   margin: auto;
-
   background: white;
-
-  padding: 50px 25px;
-
-  border-radius: 24px;
-
+  padding: 40px 20px;
+  border-radius: 16px;
   text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+/* =========================
+   ULTRA PRO ORDER TRACKING
+========================= */
 
-  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+.trackingBar {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 18px 0;
+  padding: 22px 10px;
 }
 
-.emptyOrders h2 {
-  font-size: 28px;
-  margin-bottom: 10px;
-  color: #166534;
+/* BACK LINE */
+.trackingBar::before {
+  content: "";
+  position: absolute;
+  top: 32%;
+  left: 12%;
+  width: 76%;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  z-index: 1;
 }
 
-.emptyOrders p {
-  color: #6b7280;
-  font-size: 15px;
+/* GREEN PROGRESS */
+.progressLine {
+  position: absolute;
+  top: 32%;
+  left: 12%;
+  height: 4px;
+  background: linear-gradient(to right, #16a34a, #22c55e);
+  border-radius: 10px;
+  z-index: 2;
+  transition: width 0.7s ease-in-out;
+}
+
+/* STATUS WIDTHS */
+
+.progressLine.placed {
+  width: 10%;
+}
+
+.progressLine.shipped {
+  width: 45%;
+}
+
+.progressLine.delivered {
+  width: 76%;
+}
+
+/* STEP */
+.step {
+  position: relative;
+  z-index: 3;
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+/* DOT */
+.step::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: #d1d5db;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 8px;
+  transition: 0.3s;
+}
+
+/* ACTIVE STEP */
+.step.active {
+  color: #15803d;
+}
+
+/* ACTIVE DOT */
+.step.active::before {
+  background: #16a34a;
+  box-shadow: 0 0 0 5px rgba(34,197,94,0.15);
+}
+
+/* CURRENT STEP PULSE */
+.step.current::before {
+  animation: pulse 1.5s infinite;
+}
+
+/* PULSE */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34,197,94,0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(34,197,94,0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34,197,94,0);
+  }
+}
+
+/* DELIVERED SUCCESS */
+.step.deliveredDone::before {
+  background: #15803d;
+  transform: scale(1.1);
 }
 
 /* MOBILE */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
 
-  .ordersPage {
-    padding: 25px 12px;
+  .trackingBar {
+    padding: 18px 4px;
   }
 
-  .orderTop {
-    flex-direction: column;
-    align-items: flex-start;
+  .step {
+    font-size: 10px;
   }
 
-  .orderItem {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .itemImage {
-    width: 45px;
-    height: 45px;
-  }
-
-  .ordersHeader h1 {
-    font-size: 28px;
-  }
-
-  .orderBottom h2 {
-    font-size: 20px;
+  .step::before {
+    width: 14px;
+    height: 14px;
   }
 }
