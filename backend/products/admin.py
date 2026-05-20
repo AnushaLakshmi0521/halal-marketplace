@@ -5,7 +5,8 @@ from .models import (
     Product,
     CartItem,
     Order,
-    OrderItem
+    OrderItem,
+    Address
 )
 
 
@@ -165,4 +166,36 @@ class OrderItemAdmin(admin.ModelAdmin):
 
     search_fields = (
         "product__name",
+    )
+
+# =========================
+# ADDRESS ADMIN
+# =========================
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "id",
+        "user",
+        "full_name",
+        "phone",
+        "city",
+        "state",
+        "pincode",
+        "is_default",
+        "created_at",
+    )
+
+    search_fields = (
+        "full_name",
+        "phone",
+        "city",
+        "user__username",
+    )
+
+    list_filter = (
+        "city",
+        "state",
+        "is_default",
+        "created_at",
     )
