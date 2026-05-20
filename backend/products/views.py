@@ -6,9 +6,17 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from .models import Product, CartItem, Order, OrderItem
-from .serializers import CartItemSerializer
+from .models import (
+    Product,
+    CartItem,
+    Order,
+    OrderItem,
+    Address
+)
+from .serializers import (
+    CartItemSerializer,
+    AddressSerializer
+)
 
 import razorpay
 
@@ -108,6 +116,45 @@ class CartViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
 
         return super().create(request, *args, **kwargs)
+# =========================
+# ADDRESS API
+# =========================
+class AddressViewSet(viewsets.ModelViewSet):
+
+    serializer_class = AddressSerializer
+
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(
+            user=self.request.user
+        ).order_by('-created_at')
+
+    def perform_create(self, serializer):
+
+        # Remove old default address
+        if serializer.validated_data.get("is_default"):
+
+            Address.objects.filter(
+                user=self.request.user,
+                is_default=True
+            ).update(is_default=False)
+
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+
+        # Remove old default address
+        if serializer.validated_data.get("is_default"):
+
+            Address.objects.filter(
+                user=self.request.user,
+                is_default=True
+            ).exclude(
+                id=self.get_object().id
+            ).update(is_default=False)
+
+        serializer.save()
 
 
 # =========================

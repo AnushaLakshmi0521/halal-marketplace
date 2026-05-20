@@ -1,6 +1,12 @@
 
 from rest_framework import serializers
-from .models import Product, CartItem, Order, OrderItem
+from .models import (
+    Product,
+    CartItem,
+    Order,
+    OrderItem,
+    Address
+)
 
 
 # =========================
@@ -109,4 +115,32 @@ class OrderSerializer(serializers.ModelSerializer):
             "cancelled_at",
 
             "items",
+        ]
+# =========================
+# ADDRESS
+# =========================
+class AddressSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Address
+
+        fields = [
+            "id",
+            "user",
+
+            "full_name",
+            "phone",
+
+            "address_line",
+            "city",
+            "state",
+            "pincode",
+
+            "is_default",
+
+            "created_at",
+        ]
+
+        read_only_fields = [
+            "user"
         ]
