@@ -246,22 +246,30 @@ def verify_payment(request):
             status=400
         )
     
-    # =========================
+# =========================
+# GET USER ORDERS
+# =========================
+# =========================
 # GET USER ORDERS
 # =========================
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_orders(request):
+
     user = request.user
 
-    orders = Order.objects.filter(user=user).order_by('-created_at')
+    orders = Order.objects.filter(
+        user=user
+    ).order_by('-created_at')
 
     data = []
 
     for order in orders:
+
         items = []
 
         for item in order.items.all():
+
             items.append({
                 "name": item.product.name,
                 "price": item.price,
@@ -270,13 +278,36 @@ def get_orders(request):
             })
 
         data.append({
+
             "id": order.id,
+
             "name": order.name,
+
             "address": order.address,
+
             "phone": order.phone,
+
             "total_amount": order.total_amount,
+
             "status": order.status,
+
+            "tracking_id": order.tracking_id,
+
+            "estimated_delivery": order.estimated_delivery,
+
             "created_at": order.created_at,
+
+            # ✅ TRACKING TIMES
+            "packed_at": order.packed_at,
+
+            "shipped_at": order.shipped_at,
+
+            "out_for_delivery_at": order.out_for_delivery_at,
+
+            "delivered_at": order.delivered_at,
+
+            "cancelled_at": order.cancelled_at,
+
             "items": items
         })
 
