@@ -11,7 +11,9 @@ function Orders() {
 
   const getImage = (img) => {
     if (!img) return "https://via.placeholder.com/100";
+
     if (img.startsWith("http")) return img;
+
     return `https://res.cloudinary.com/doihibg9v/${img}`;
   };
 
@@ -27,6 +29,7 @@ function Orders() {
         });
 
         const data = await res.json();
+
         setOrders(Array.isArray(data) ? data : []);
       } catch (err) {
         console.log(err);
@@ -41,12 +44,25 @@ function Orders() {
     setExpandedOrder(expandedOrder === id ? null : id);
   };
 
+  const steps = [
+    "Placed",
+    "Packed",
+    "Shipped",
+    "Out for Delivery",
+    "Delivered",
+  ];
+
+  const getStepIndex = (status) => {
+    const index = steps.indexOf(status);
+    return index === -1 ? 0 : index;
+  };
+
   return (
     <div className="ordersPage">
 
       <div className="ordersHeader">
         <h1>📦 Your Orders</h1>
-        <p>Track, view and manage your purchases</p>
+        <p>Track your orders in real time</p>
       </div>
 
       {orders.length === 0 ? (
@@ -59,38 +75,58 @@ function Orders() {
           {orders.map((order) => {
             const isOpen = expandedOrder === order.id;
 
+            const stepIndex = getStepIndex(order.status);
+
             return (
               <div key={order.id} className="orderCard">
 
                 {/* TOP */}
+
                 <div className="orderTop">
+
                   <div>
                     <h3>Order #{order.id}</h3>
-                    <p>
+
+                    <p className="date">
                       {order.created_at
                         ? new Date(order.created_at).toDateString()
                         : ""}
                     </p>
                   </div>
 
-                  <span className={`status ${order.status || "processing"}`}>
-                    {order.status || "Processing"}
+                  <span
+                    className={`status ${(
+                      order.status || "Placed"
+                    )
+                      .toLowerCase()
+                      .replace(/ /g, "")}`}
+                  >
+                    {order.status || "Placed"}
                   </span>
+
                 </div>
 
                 <div className="divider"></div>
 
-                {/* PRODUCT PREVIEW */}
+                {/* PREVIEW */}
+
                 <div className="previewItems">
+
                   {(order.items || []).slice(0, 2).map((item, i) => (
                     <div key={i} className="previewItem">
-                      <img src={getImage(item.image)} />
+
+                      <img
+                        src={getImage(item.image)}
+                        alt={item.name}
+                      />
+
                       <span>{item.name}</span>
+
                     </div>
                   ))}
+
                 </div>
 
-                {/* BUTTON */}
                 <button
                   className="viewBtn"
                   onClick={() => toggleOrder(order.id)}
@@ -98,69 +134,150 @@ function Orders() {
                   {isOpen ? "Hide Details" : "View Order Details"}
                 </button>
 
-               {/* EXPANDED SECTION */}
-{isOpen && (
-  <div className="expandedSection">
+                {/* EXPANDED */}
 
-    {/* TRACKING BAR */}
-  <div className="trackingBar">
+                {isOpen && (
+                  <div className="expandedSection">
 
-  <div
-    className={`step 
-    ${["Placed", "Shipped", "Delivered"].includes(order.status) ? "active" : ""}
-    ${order.status === "Placed" ? "current" : ""}
-    `}
-  >
-    Order Placed
-  </div>
+                    {/* TRACKING */}
 
-  <div
-    className={`step 
-    ${["Shipped", "Delivered"].includes(order.status) ? "active" : ""}
-    ${order.status === "Shipped" ? "current" : ""}
-    `}
-  >
-    Shipped
-  </div>
+                    <div className="trackingBar">
 
-  <div
-    className={`step 
-    ${order.status === "Delivered" ? "active deliveredDone current" : ""}
-    `}
-  >
-    Delivered
-  </div>
+                      {/* ROAD */}
+                      <div className="road"></div>
 
-  <div className={`progressLine ${order.status?.toLowerCase()}`}></div>
+                      {/* PROGRESS */}
+                      <div
+                        className={`progressLine ${steps[stepIndex]
+                          .toLowerCase()
+                          .replace(/ /g, "")}`}
+                      />
 
-</div>
-    {/* ITEMS */}
-    <div className="itemsSection">
-      {(order.items || []).map((item, index) => (
-        <div key={index} className="orderItem">
-          <img src={getImage(item.image)} />
-          <div>
-            <h4>{item.name}</h4>
-            <p>Qty: {item.quantity}</p>
-          </div>
-          <b>₹{item.price}</b>
-        </div>
-      ))}
-    </div>
+                      {/* TRUCK */}
+                      <div className="truckWrapper">
 
-    {/* ADDRESS */}
-    <div className="addressBox">
-      <b>Delivery Address</b>
-      <p>{order.address}</p>
-    </div>
+                        <div
+                          className={`truck ${steps[stepIndex]
+                            .toLowerCase()
+                            .replace(/ /g, "")}`}
+                        >
+                          🚚
+                        </div>
 
-    {/* TOTAL */}
-    <div className="totalBox">
-      <h3>Total: ₹{order.total_amount}</h3>
-    </div>
+                      </div>
 
-  </div>
-)}
+                      {/* STEPS */}
+
+                      {steps.map((step, i) => (
+                        <div
+                          key={i}
+                          className={`step ${
+                            stepIndex >= i ? "active" : ""
+                          }`}
+                        >
+                          {step}
+                        </div>
+                      ))}
+
+                    </div>
+
+                    {/* DELIVERY INFO */}
+
+                    <div className="deliveryInfo">
+
+                      <p>
+                        <strong>Estimated Delivery:</strong>{" "}
+                        {order.estimated_delivery
+                          ? new Date(
+                              order.estimated_delivery
+                            ).toDateString()
+                          : "Not Available"}
+                      </p>
+
+                      {order.packed_at && (
+                        <p>
+                          📦 Packed:{" "}
+                          {new Date(
+                            order.packed_at
+                          ).toLocaleString()}
+                        </p>
+                      )}
+
+                      {order.shipped_at && (
+                        <p>
+                          🚚 Shipped:{" "}
+                          {new Date(
+                            order.shipped_at
+                          ).toLocaleString()}
+                        </p>
+                      )}
+
+                      {order.out_for_delivery_at && (
+                        <p>
+                          🛵 Out for Delivery:{" "}
+                          {new Date(
+                            order.out_for_delivery_at
+                          ).toLocaleString()}
+                        </p>
+                      )}
+
+                      {order.delivered_at && (
+                        <p>
+                          ✅ Delivered:{" "}
+                          {new Date(
+                            order.delivered_at
+                          ).toLocaleString()}
+                        </p>
+                      )}
+
+                    </div>
+
+                    {/* ITEMS */}
+
+                    <div className="itemsSection">
+
+                      {(order.items || []).map((item, index) => (
+                        <div key={index} className="orderItem">
+
+                          <div className="itemLeft">
+
+                            <img
+                              src={getImage(item.image)}
+                              alt={item.name}
+                            />
+
+                            <div>
+                              <h4>{item.name}</h4>
+                              <p>Qty: {item.quantity}</p>
+                            </div>
+
+                          </div>
+
+                          <b>₹{item.price}</b>
+
+                        </div>
+                      ))}
+
+                    </div>
+
+                    {/* ADDRESS */}
+
+                    <div className="addressBox">
+
+                      <b>Delivery Address</b>
+
+                      <p>{order.address}</p>
+
+                    </div>
+
+                    {/* TOTAL */}
+
+                    <div className="totalBox">
+                      <h3>Total: ₹{order.total_amount}</h3>
+                    </div>
+
+                  </div>
+                )}
 
               </div>
             );

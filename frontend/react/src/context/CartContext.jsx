@@ -8,7 +8,7 @@ export function CartProvider({ children }) {
 
   const [cartCount, setCartCount] = useState(0);
 
-  const API_CART = "http://127.0.0.1:8000/products/cart/"; // ✅ FIXED URL
+  const API_CART =   "https://halal-marketplace.onrender.com/products/cart/"; // ✅ FIXED URL
 
   /* 🔄 Load cart */
   const loadCart = async () => {
