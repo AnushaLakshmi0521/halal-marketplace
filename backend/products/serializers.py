@@ -1,11 +1,14 @@
 
 from rest_framework import serializers
+from .models import WishlistItem
 from .models import (
     Product,
     CartItem,
     Order,
     OrderItem,
-    Address
+    Address,
+    WishlistItem,
+    
 )
 
 
@@ -143,4 +146,19 @@ class AddressSerializer(serializers.ModelSerializer):
 
         read_only_fields = [
             "user"
+        ]
+class WishlistSerializer(serializers.ModelSerializer):
+
+    product_detail = ProductSerializer(
+        source="product",
+        read_only=True
+    )
+
+    class Meta:
+        model = WishlistItem
+        fields = [
+            "id",
+            "product",
+            "product_detail",
+            "created_at"
         ]

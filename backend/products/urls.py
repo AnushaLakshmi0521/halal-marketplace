@@ -4,6 +4,7 @@ from .views import (
     get_products,
     CartViewSet,
     AddressViewSet,
+    WishlistViewSet,
     create_payment,
     verify_payment,
     get_orders
@@ -16,7 +17,11 @@ router.register(
     AddressViewSet,
     basename="addresses"
 )
-
+router.register(
+    r'wishlist',
+    WishlistViewSet,
+    basename='wishlist'
+)
 urlpatterns = [
     # =========================
     # PRODUCTS

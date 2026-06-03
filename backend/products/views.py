@@ -11,11 +11,14 @@ from .models import (
     CartItem,
     Order,
     OrderItem,
-    Address
+    Address,
+    WishlistItem,
+  
 )
 from .serializers import (
     CartItemSerializer,
-    AddressSerializer
+    AddressSerializer,
+    WishlistSerializer
 )
 
 import razorpay
@@ -312,3 +315,38 @@ def get_orders(request):
         })
 
     return Response(data)
+
+class WishlistViewSet(viewsets.ModelViewSet):
+
+    serializer_class = WishlistSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return WishlistItem.objects.filter(
+            user=self.request.user
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(
+            user=self.request.user
+        )
+
+    def create(self, request, *args, **kwargs):
+
+        product_id = request.data.get("product")
+
+        existing = WishlistItem.objects.filter(
+            user=request.user,
+            product_id=product_id
+        ).first()
+
+        if existing:
+            return Response(
+                {"message": "Already in wishlist"}
+            )
+
+        return super().create(
+            request,
+            *args,
+            **kwargs
+        )

@@ -6,7 +6,8 @@ from .models import (
     CartItem,
     Order,
     OrderItem,
-    Address
+    Address,
+    WishlistItem,
 )
 
 
@@ -142,6 +143,9 @@ class OrderAdmin(admin.ModelAdmin):
             "fields": (
                 "created_at",
                 "updated_at",
+                "packed_at",
+                "shipped_at",
+                "out_for_delivery_at",
                 "delivered_at",
                 "cancelled_at",
             )
@@ -167,6 +171,7 @@ class OrderItemAdmin(admin.ModelAdmin):
     search_fields = (
         "product__name",
     )
+
 
 # =========================
 # ADDRESS ADMIN
@@ -197,5 +202,28 @@ class AddressAdmin(admin.ModelAdmin):
         "city",
         "state",
         "is_default",
+        "created_at",
+    )
+
+
+# =========================
+# WISHLIST ADMIN
+# =========================
+@admin.register(WishlistItem)
+class WishlistItemAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "id",
+        "user",
+        "product",
+        "created_at",
+    )
+
+    search_fields = (
+        "user__username",
+        "product__name",
+    )
+
+    list_filter = (
         "created_at",
     )
