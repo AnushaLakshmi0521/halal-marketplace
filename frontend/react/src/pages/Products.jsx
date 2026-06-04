@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import "./Products.css";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 function Products() {
   const { loadCart: refreshCart } = useCart();
@@ -10,6 +12,8 @@ function Products() {
   const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All Products");
   const [searchTerm, setSearchTerm] = useState("");
+ 
+  const { wishlist, loadWishlist } = useWishlist();
 
   const navigate = useNavigate();
   const { category } = useParams();
@@ -18,6 +22,7 @@ function Products() {
 
   const API_PRODUCTS =/*http://127.0.0.1:8000*/"https://halal-marketplace.onrender.com/products/products/";
   const API_CART = /*http://127.0.0.1:8000*/"https://halal-marketplace.onrender.com/products/cart/"; // ✅ FIXED
+  const API_WISHLIST ="https://halal-marketplace.onrender.com/products/wishlist/";
 
   const getToken = () => localStorage.getItem("access");
 
@@ -56,9 +61,12 @@ function Products() {
       setCart([]);
     }
   };
+ 
+ 
 
   useEffect(() => {
     loadCart();
+    
   }, []);
 
   /* CATEGORY SYNC */
@@ -130,6 +138,11 @@ function Products() {
     await loadCart();
     await refreshCart();
   };
+  const isWishlisted = (productId) => {
+  return wishlist.some(
+    (item) => item.product === productId
+  );
+};
 
   return (
     <div className="wrapper">
@@ -170,6 +183,63 @@ function Products() {
         <div className="grid">
           {filteredProducts.map((item) => (
             <div key={item.id} className="card">
+            <div
+  className="heartBtn"
+  onClick={async (e) => {
+    e.stopPropagation();
+
+    const token = getToken();
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      if (isWishlisted(item.id)) {
+
+        const wishItem = wishlist.find(
+          (w) => w.product === item.id
+        );
+
+        await fetch(
+          `${API_WISHLIST}${wishItem.id}/`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+      } else {
+
+        await fetch(API_WISHLIST, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            product: item.id,
+          }),
+        });
+
+      }
+
+      loadWishlist();
+
+    } catch (err) {
+      console.log(err);
+    }
+  }}
+>
+  {isWishlisted(item.id) ? (
+  <FaHeart size={18} color="#ff3f6c" />
+) : (
+  <FaRegHeart size={18} color="#94a3b8" />
+)}
+</div>
 
               <img
                 src={
@@ -184,17 +254,20 @@ function Products() {
               />
 
               <div className="content">
-                <h3>{item.name}</h3>
-                <p className="desc">{item.description}</p>
-                <p className="price">₹ {item.price}</p>
+  <h3>{item.name}</h3>
 
-                <button
-                  className="button"
-                  onClick={() => addToCart(item)}
-                >
-                  Add to Cart
-                </button>
-              </div>
+  <p className="desc">{item.description}</p>
+
+  <p className="price">₹ {item.price}</p>
+
+  <button
+    className="button"
+    onClick={() => addToCart(item)}
+  >
+    Add to Cart
+  </button>
+
+</div>
 
             </div>
           ))}

@@ -3,13 +3,14 @@ import { useState } from "react";
 import logo from "../assets/log.jpeg";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext"; // ✅ use context
+import { useWishlist} from "../context/WishlistContext"; 
 
 function Navbar() {
   const { cartCount } = useCart();
   const { auth, logout } = useAuth(); // ✅ get auth from context
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const {wishlistCount} = useWishlist();
   return (
     <nav style={styles.nav}>
       
@@ -37,10 +38,25 @@ function Navbar() {
         <li><NavLink to="/blog" style={navStyle}>Blog</NavLink></li>
         <li><NavLink to="/vendor" style={navStyle}>Vendor</NavLink></li>
         <li><NavLink to="/orders" style={navStyle}>My Orders</NavLink></li>
+        <li><NavLink to="/wishlist" style={navStyle}>Wishlist</NavLink></li>
       </ul>
 
       {/* RIGHT */}
       <div style={styles.right}>
+
+        {/*wishlist*/}
+        <div
+  style={styles.wishlistIconWrapper}
+  onClick={() => navigate("/wishlist")}
+>
+  ❤️
+
+  {wishlistCount > 0 && (
+    <span style={styles.wishlistBadge}>
+      {wishlistCount}
+    </span>
+  )}
+</div>
 
         {/* CART */}
         <div
@@ -211,7 +227,28 @@ const styles = {
     border: "none",
     borderRadius: "5px",
     cursor: "pointer"
-  }
+  },
+  
+wishlistIconWrapper: {
+  position: "relative",
+  cursor: "pointer",
+  fontSize: "22px",
+},
+
+wishlistBadge: {
+  position: "absolute",
+  top: "-6px",
+  right: "-8px",
+  background: "red",
+  color: "#fff",
+  width: "18px",
+  height: "18px",
+  borderRadius: "50%",
+  fontSize: "11px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+},
 };
 
 export default Navbar;

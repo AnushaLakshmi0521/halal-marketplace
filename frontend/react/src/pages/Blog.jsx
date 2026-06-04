@@ -1,8 +1,10 @@
 
 import React, { useEffect } from 'react';
+// Path adjusted to go up one level to src/assets/
+import animation1 from '../assets/animation1.mp4'; 
 
 const Blog = () => {
-  // Logic for the scroll-reveal animations found in your script
+  // Logic for the scroll-reveal animations down the page
   useEffect(() => {
     const observerOptions = { threshold: 0.1 };
     const observer = new IntersectionObserver((entries) => {
@@ -48,11 +50,92 @@ const Blog = () => {
           pointer-events: none; z-index: 1000; opacity: 0.4;
         }
 
+        /* ─── NEW TWO-COLUMN SPLIT HEADER BACKDROP ─── */
+        .split-header-section {
+          background: var(--green);
+          padding: 80px 8vw;
+          display: grid;
+          grid-template-columns: 1.1fr 0.9fr; /* Left column slightly wider for typography */
+          gap: 40px;
+          align-items: center;
+          min-height: 70vh;
+        }
+
+        /* Left Side Text & Pop Up Animation Rules */
+        .split-header-text {
+          color: #ffffff;
+          opacity: 0;
+          transform: translateY(20px);
+          animation: popUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        .split-header-text .kicker {
+          color: var(--green-light);
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          font-size: 12px;
+          font-weight: 700;
+          display: block;
+          margin-bottom: 12px;
+        }
+
+        .split-header-text h1 {
+          font-family: "Playfair Display", serif;
+          font-size: clamp(32px, 4vw, 52px);
+          line-height: 1.15;
+          margin-bottom: 20px;
+          font-weight: 800;
+        }
+
+        .split-header-text h1 em {
+          font-style: italic;
+          color: var(--gold-light);
+        }
+
+        .split-header-text p {
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 16px;
+          max-width: 500px;
+          line-height: 1.6;
+        }
+
+        /* Right Side Video Setup (Zero Cropping Window) */
+        .split-header-video-wrap {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 700px;
+        }
+
+        .split-video-container {
+          width: 100%;
+          max-width: 1500px; /* Restricts width so height scales perfectly short */
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+          line-height: 0;
+        }
+
+        .split-video-element {
+          width: 100%;
+          height: auto;
+          object-fit: contain; /* Absolute guarantee against edge cropping */
+        }
+
+        /* CSS Keyframe for the Pop-up entry effect */
+        @keyframes popUp {
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
         /* Hero Styling */
         .hero {
-          min-height: 100vh; background: var(--dark-bg);
+          min-height: 60vh; background: var(--dark-bg);
           position: relative; display: grid; place-items: center;
-          overflow: hidden; padding: 100px 5vw 80px; text-align: center;
+          overflow: hidden; padding: 60px 5vw; text-align: center;
+          border-top: 1px solid rgba(255,255,255,0.05);
         }
 
         .hero-blob::before {
@@ -65,10 +148,9 @@ const Blog = () => {
         @keyframes blobDrift { from { transform: translate(0,0); } to { transform: translate(3%,4%); } }
 
         .hero-h1 {
-          font-family: "Playfair Display", serif; font-size: clamp(36px, 5.5vw, 68px);
-          font-weight: 900; color: #fff; line-height: 1.08; margin-bottom: 26px;
+          font-family: "Playfair Display", serif; font-size: clamp(32px, 4.5vw, 56px);
+          font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 26px;
         }
-        .hero-h1 em { font-style: italic; color: var(--gold-light); }
 
         /* Article Styling */
         .article { max-width: 740px; margin: 0 auto; padding: 80px 5vw 100px; }
@@ -109,17 +191,43 @@ const Blog = () => {
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.on { opacity: 1; transform: translateY(0); }
 
-        @media (max-width: 640px) {
+        /* Responsive Breakpoint for Small Screens */
+        @media (max-width: 868px) {
+          .split-header-section { grid-template-columns: 1fr; text-align: center; padding: 60px 5vw; gap: 30px;}
+          .split-header-text p { margin: 0 auto; }
           .compare-header, .compare-body, .stat-trio { grid-template-columns: 1fr; }
         }
       `}</style>
 
-      {/* ─── HERO SECTION ─── */}
+      {/* ─── NEW SPLIT INTRO SECTION (Text left popping up, Animation right) ─── */}
+      <section className="split-header-section">
+        <div className="split-header-text">
+          <span className="kicker">Pure & Wholesome</span>
+          <h1>A New Way to Think About Your <em>Daily Nutrition</em></h1>
+          <p>
+            Welcome to our blog space. Here, we break down the deeper layers of clean eating, mindful consumption, and food tracking that goes well beyond standard ingredients.
+          </p>
+        </div>
+        
+        <div className="split-header-video-wrap">
+          <div className="split-video-container">
+            <video 
+              className="split-video-element"
+              src={animation1}
+              autoPlay 
+              loop 
+              muted 
+              playsInline
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ─── HERO BRAND STATEMENT SECTION ─── */}
       <section className="hero">
         <div className="hero-blob"></div>
         <div className="hero-inner">
-          <span className="hero-kicker">The Food Standard</span>
-          <h1 className="hero-h1">Why Halal & <em>Tayyib</em> is the standard for everyone.</h1>
+          <h2 className="hero-h1">Why Halal & Tayyib is the standard for everyone.</h2>
           <p style={{ color: 'rgba(255,255,255,0.6)', maxWidth: '600px', margin: '0 auto' }}>
             Beyond basic requirements lies a standard of absolute purity, ethical stewardship, and wholesome nutrition.
           </p>
@@ -134,7 +242,7 @@ const Blog = () => {
 
         <p>In the modern food landscape, we are often overwhelmed by labels. Organic, Non-GMO, and Fair Trade all try to solve parts of a broken system. The standard of <strong>Halal & Tayyib</strong> represents an integrated approach.</p>
 
-        {/* THE PILLARS (from html cards) */}
+        {/* THE PILLARS */}
         <h2 style={{ fontFamily: 'Playfair Display', fontSize: '32px', margin: '40px 0 20px' }}>The Three Pillars</h2>
         <div className="pillar-grid">
           <div className="pillar reveal">
@@ -207,7 +315,7 @@ const Blog = () => {
           <p>Principles of Purity and Goodness are universal values that protect the health of all people and the planet.</p>
         </div>
 
-        {/* CTA (Replaced Footer with the CTA section from your HTML) */}
+        {/* CTA */}
         <section style={{ background: 'var(--dark-bg)', padding: '60px 40px', borderRadius: '22px', textAlign: 'center', marginTop: '60px' }}>
           <h2 style={{ color: '#fff', fontFamily: 'Playfair Display', fontSize: '30px' }}>Good Food. <em style={{ color: 'var(--gold-light)' }}>Honestly Made.</em></h2>
           <p style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '30px', maxWidth:'450px', margin:'0 auto 30px' }}>

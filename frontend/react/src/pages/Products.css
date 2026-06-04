@@ -246,3 +246,44 @@
   background: #15803d;
   transform: translateY(-1px);
 }
+.wishlistBtn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #ec4899;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.wishlistBtn:hover {
+  transform: translateY(-2px);
+}
+
+.card {
+  position: relative;
+}
+
+.heartBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+
+.heartBtn:hover {
+  transform: scale(1.1);
+}

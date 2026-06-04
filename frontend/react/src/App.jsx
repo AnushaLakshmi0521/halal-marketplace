@@ -1,10 +1,8 @@
+
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
-import { CartProvider } from "./context/CartContext";
-import OrderSuccess from "./pages/OrderSuccess";
 
 import { Routes, Route } from "react-router-dom";
-import Orders from "./pages/Orders";
 
 import Home from "./pages/Home.jsx";
 import Products from "./pages/Products.jsx";
@@ -14,38 +12,45 @@ import Vendor from "./pages/Vendor.jsx";
 import Checkout from "./pages/Checkout.jsx";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-
+import Orders from "./pages/Orders";
+import OrderSuccess from "./pages/OrderSuccess";
+import Wishlist from "./pages/Wishlist";
 
 function App() {
   return (
-    <CartProvider>
-      <div className="app">
+    <div className="app">
+      <Navbar />
 
-        <Navbar />
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
 
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
+          {/* Products */}
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:category" element={<Products />} />
 
-            {/* ✅ UPDATED ROUTES */}
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/:category" element={<Products />} />
+          {/* Other Pages */}
+          <Route path="/about" element={<About />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/vendor" element={<Vendor />} />
 
-            <Route path="/about" element={<About />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/vendor" element={<Vendor />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/order-success" element={<OrderSuccess />} />
-          </Routes>
-        </main>
+          {/* Auth */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
-        <Footer />
+          {/* Checkout */}
+          <Route path="/checkout" element={<Checkout />} />
 
-      </div>
-    </CartProvider>
+          {/* Orders */}
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/order-success" element={<OrderSuccess />} />
+
+          <Route path="/wishlist" element={<Wishlist />} />
+        </Routes>
+      </main>
+
+      <Footer />
+    </div>
   );
 }
 
