@@ -57,6 +57,14 @@ function Orders() {
     return index === -1 ? 0 : index;
   };
 
+  const getProgress = (index) => {
+    if (index === 0) return "20%";
+    if (index === 1) return "40%";
+    if (index === 2) return "60%";
+    if (index === 3) return "80%";
+    return "100%";
+  };
+
   return (
     <div className="ordersPage">
 
@@ -143,10 +151,18 @@ function Orders() {
 
                     <div className="trackingBar">
 
+                      {/* PROGRESS TEXT */}
+
+                      <div className="progressText">
+                        {getProgress(stepIndex)}
+                      </div>
+
                       {/* ROAD */}
+
                       <div className="road"></div>
 
-                      {/* PROGRESS */}
+                      {/* GREEN LINE */}
+
                       <div
                         className={`progressLine ${steps[stepIndex]
                           .toLowerCase()
@@ -154,6 +170,7 @@ function Orders() {
                       />
 
                       {/* TRUCK */}
+
                       <div className="truckWrapper">
 
                         <div

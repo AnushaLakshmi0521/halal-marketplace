@@ -182,7 +182,12 @@ function Products() {
 
         <div className="grid">
           {filteredProducts.map((item) => (
-            <div key={item.id} className="card">
+          <div
+  key={item.id}
+  className={`card ${
+    item.stock_quantity <= 0 ? "outOfStockCard" : ""
+  }`}
+>
             <div
   className="heartBtn"
   onClick={async (e) => {
@@ -260,13 +265,25 @@ function Products() {
 
   <p className="price">₹ {item.price}</p>
 
+  {item.stock_quantity <= 0 ? (
+    <p className="outStockText">
+      ❌ Out Of Stock
+    </p>
+  ) : item.stock_quantity <= 3 ? (
+    <p className="lowStockText">
+      ⚠ Only {item.stock_quantity} left
+    </p>
+  ) : null}
+
   <button
     className="button"
+    disabled={item.stock_quantity <= 0}
     onClick={() => addToCart(item)}
   >
-    Add to Cart
+    {item.stock_quantity <= 0
+      ? "Out Of Stock"
+      : "Add To Cart"}
   </button>
-
 </div>
 
             </div>

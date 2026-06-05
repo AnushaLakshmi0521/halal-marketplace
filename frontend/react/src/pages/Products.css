@@ -286,4 +286,25 @@
 
 .heartBtn:hover {
   transform: scale(1.1);
+} 
+.outOfStockCard {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  pointer-events: none;
+  position: relative;
 }
+
+.outOfStockCard::after {
+  content: "OUT OF STOCK";
+  position: absolute;
+  top: 20px;
+  right: -35px;
+  background: red;
+  color: white;
+  padding: 8px 40px;
+  transform: rotate(45deg);
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 100;
+}
+ 
