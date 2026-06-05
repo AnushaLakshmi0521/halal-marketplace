@@ -44,6 +44,9 @@ class Product(models.Model):
         blank=True,
         null=True
     )
+    stock_quantity = models.PositiveIntegerField(
+    default=10
+    )
 
     def __str__(self):
         return self.name

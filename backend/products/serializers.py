@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import WishlistItem
+
 from .models import (
     Product,
     CartItem,
@@ -17,10 +17,25 @@ from .models import (
 # =========================
 class ProductSerializer(serializers.ModelSerializer):
 
+    stock_status = serializers.SerializerMethodField()
+    stock_left = serializers.SerializerMethodField()
+
     class Meta:
         model = Product
         fields = "__all__"
 
+    def get_stock_status(self, obj):
+
+        if obj.stock_quantity <= 0:
+            return "out_of_stock"
+
+        elif obj.stock_quantity <= 3:
+            return "low_stock"
+
+        return "in_stock"
+
+    def get_stock_left(self, obj):
+        return obj.stock_quantity
 
 # =========================
 # CART

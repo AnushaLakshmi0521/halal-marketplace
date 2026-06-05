@@ -82,6 +82,17 @@ def get_products(request):
             "ingredients": p.ingredients,
             "source": p.source,
             "category": p.category,
+            "stock_quantity": p.stock_quantity,
+
+            "stock_status": (
+               "out_of_stock"
+               if p.stock_quantity <= 0
+               else "low_stock"
+               if p.stock_quantity <= 3
+               else "in_stock"
+            ),
+
+            "stock_left": p.stock_quantity,
             #"estimated_delivery": order.estimated_delivery,
             "image": p.image.url if p.image else None
         })
@@ -103,8 +114,30 @@ class CartViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
+
         product_id = request.data.get("product")
         quantity = int(request.data.get("quantity", 1))
+        if quantity <= 0:
+               return Response(
+                   {"error": "Invalid quantity"},
+                   status=400
+                )
+
+        try:
+            product = Product.objects.get(id=product_id)
+
+        except Product.DoesNotExist:
+            return Response(
+                {"error": "Product not found"},
+                status=404
+            )
+
+        # OUT OF STOCK
+        if product.stock_quantity <= 0:
+            return Response(
+                {"error": "Product is out of stock"},
+                status=400
+            )
 
         existing_item = CartItem.objects.filter(
             user=request.user,
@@ -112,13 +145,33 @@ class CartViewSet(viewsets.ModelViewSet):
         ).first()
 
         if existing_item:
+
+            if (
+                existing_item.quantity + quantity
+                > product.stock_quantity
+            ):
+                return Response(
+                    {
+                        "error":
+                        f"Only {product.stock_quantity} items available"
+                    },
+                    status=400
+                )
+
             existing_item.quantity += quantity
             existing_item.save()
 
-            serializer = self.get_serializer(existing_item)
+            serializer = self.get_serializer(
+                existing_item
+            )
+
             return Response(serializer.data)
 
-        return super().create(request, *args, **kwargs)
+        return super().create(
+            request,
+            *args,
+            **kwargs
+        )
 # =========================
 # ADDRESS API
 # =========================
@@ -205,6 +258,17 @@ def verify_payment(request):
 
         # ✅ GET USER CART
         cart_items = CartItem.objects.filter(user=user)
+        for item in cart_items:
+
+            if item.quantity > item.product.stock_quantity:
+
+                return Response(
+                {
+                   "error":
+                   f"{item.product.name} has only {item.product.stock_quantity} items left"
+                },
+                status=400
+                )
 
         if not cart_items.exists():
             return Response({"error": "Cart is empty"}, status=400)
@@ -228,12 +292,16 @@ def verify_payment(request):
 
         # ✅ CREATE ORDER ITEMS
         for item in cart_items:
-            OrderItem.objects.create(
-                order=order,
-                product=item.product,
-                quantity=item.quantity,
-                price=item.product.price
-            )
+
+           OrderItem.objects.create(
+            order=order,
+            product=item.product,
+            quantity=item.quantity,
+            price=item.product.price
+           )
+
+           item.product.stock_quantity -= item.quantity
+           item.product.save()
 
         # ✅ CLEAR ONLY THIS USER CART
         cart_items.delete()

@@ -21,8 +21,13 @@ class ProductAdmin(admin.ModelAdmin):
         "id",
         "name",
         "price",
+        "stock_quantity",
         "category",
         "halal_certified",
+    )
+
+    list_editable = (
+        "stock_quantity",
     )
 
     list_filter = (
