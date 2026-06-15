@@ -2,6 +2,8 @@
 from django.db import models
 from cloudinary.models import CloudinaryField
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
 
 
 # =========================
@@ -124,6 +126,7 @@ class Order(models.Model):
         choices=STATUS_CHOICES,
         default="Placed"
     )
+    can_cancel = models.BooleanField(default=True)
 
     # TOTAL
     total_amount = models.FloatField()
@@ -180,6 +183,12 @@ class Order(models.Model):
     # AUTO TIMESTAMP HANDLER
     # =========================
     def save(self, *args, **kwargs):
+        if (
+            self.can_cancel and 
+            self.created_at and
+            timezone.now() > self.created_at + timedelta(seconds=30)
+        ):
+            self.can_cancel = False
 
         from django.utils.timezone import now
 
@@ -199,6 +208,7 @@ class Order(models.Model):
             self.cancelled_at = now()
 
         super().save(*args, **kwargs)
+        
 
     def __str__(self):
         return f"Order #{self.id} - {self.user.username}"

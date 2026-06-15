@@ -7,7 +7,9 @@ from .views import (
     WishlistViewSet,
     create_payment,
     verify_payment,
-    get_orders
+    get_orders,
+    cancel_order
+    
 )
 
 router = DefaultRouter()
@@ -43,4 +45,8 @@ urlpatterns = [
     # ORDERS (NEW)
     # =========================
     path('orders/', get_orders),
+    path(
+        'cancel-order/<int:order_id>/',
+        cancel_order
+    ),
 ]

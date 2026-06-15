@@ -88,6 +88,7 @@ class OrderAdmin(admin.ModelAdmin):
         "name",
         "phone",
         "status",
+        "can_cancel",
         "payment_status",
         "total_amount",
         "tracking_id",
@@ -139,6 +140,7 @@ class OrderAdmin(admin.ModelAdmin):
         ("Order Tracking", {
             "fields": (
                 "status",
+                "can_cancel",
                 "tracking_id",
                 "estimated_delivery",
             )

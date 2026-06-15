@@ -336,6 +336,7 @@ def get_orders(request):
     data = []
 
     for order in orders:
+        order.update_cancel_status()
 
         items = []
 
@@ -351,6 +352,7 @@ def get_orders(request):
         data.append({
 
             "id": order.id,
+            "can_cancel": order.can_cancel,
 
             "name": order.name,
 
@@ -417,4 +419,41 @@ class WishlistViewSet(viewsets.ModelViewSet):
             request,
             *args,
             **kwargs
+        )
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def cancel_order(request, order_id):
+
+    try:
+        order = Order.objects.get(
+            id=order_id,
+            user=request.user
+        )
+
+        order.update_cancel_status()
+
+        if not order.can_cancel:
+            return Response(
+                {"error": "Cancellation time expired"},
+                status=400
+            )
+
+        if order.status != "Placed":
+            return Response(
+                {"error": "Order cannot be cancelled"},
+                status=400
+            )
+
+        order.status = "Cancelled"
+        order.save()
+
+        return Response({
+            "message": "Order cancelled successfully"
+        })
+
+    except Order.DoesNotExist:
+        return Response(
+            {"error": "Order not found"},
+            status=404
         )
