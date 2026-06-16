@@ -17,32 +17,61 @@ function Orders() {
     return `https://res.cloudinary.com/doihibg9v/${img}`;
   };
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = localStorage.getItem("access");
+  const fetchOrders = async () => {
+  try {
+    const token = localStorage.getItem("access");
 
-        const res = await fetch(API_ORDERS, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    const res = await fetch(API_ORDERS, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-        const data = await res.json();
+    const data = await res.json();
 
-        setOrders(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.log(err);
-        setOrders([]);
-      }
-    };
+    setOrders(Array.isArray(data) ? data : []);
+  } catch (err) {
+    console.log(err);
+    setOrders([]);
+  }
+};
 
-    fetchOrders();
-  }, []);
+useEffect(() => {
+  fetchOrders();
+}, []);
 
   const toggleOrder = (id) => {
     setExpandedOrder(expandedOrder === id ? null : id);
   };
+  const cancelOrder = async (orderId) => {
+  try {
+    const token = localStorage.getItem("access");
+
+    const res = await fetch(
+      `https://halal-marketplace.onrender.com/products/cancel-order/${orderId}/`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error);
+      return;
+    }
+
+    alert("Order cancelled successfully");
+
+    fetchOrders();
+
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   const steps = [
     "Placed",
@@ -81,6 +110,7 @@ function Orders() {
         <div className="ordersGrid">
 
           {orders.map((order) => {
+            console.log("ORDER DATA:", order);
             const isOpen = expandedOrder === order.id;
 
             const stepIndex = getStepIndex(order.status);
@@ -292,7 +322,15 @@ function Orders() {
                     <div className="totalBox">
                       <h3>Total: ₹{order.total_amount}</h3>
                     </div>
-
+  
+{order.can_cancel && (
+  <button
+    className="cancelBtn"
+    onClick={() => cancelOrder(order.id)}
+  >
+    Cancel Order
+  </button>
+)}
                   </div>
                 )}
 
