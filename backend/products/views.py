@@ -336,7 +336,7 @@ def get_orders(request):
     data = []
 
     for order in orders:
-        order.update_cancel_status()
+        #order.update_cancel_status()
 
         items = []
 
