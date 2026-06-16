@@ -508,6 +508,7 @@ def download_invoice(request, order_id):
     p.drawString(50, y, f"Total Amount: ₹{order.total_amount}")
 
     # FINAL IMPORTANT STEP
+    #http://127.0.0.1:8000/products/download-invoice/1/
     p.showPage()
     p.save()
 
