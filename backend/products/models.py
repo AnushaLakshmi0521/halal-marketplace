@@ -182,38 +182,55 @@ class Order(models.Model):
     # =========================
     # AUTO TIMESTAMP HANDLER
     # =========================
-    def save(self, *args, **kwargs):
-        if (
-            self.can_cancel and 
-            self.created_at and
-            timezone.now() > self.created_at + timedelta(seconds=30)
-        ):
-            self.can_cancel = False
-            self.save(update_fields=["can_cancel"])
+    # =========================
+# AUTO TIMESTAMP HANDLER
+# =========================
+def save(self, *args, **kwargs):
 
-        from django.utils.timezone import now
+    # Auto disable cancel after 30 seconds
+    if (
+        self.can_cancel and
+        self.created_at and
+        timezone.now() > self.created_at + timedelta(seconds=30)
+    ):
+        self.can_cancel = False
 
-        if self.status == "Packed" and not self.packed_at:
-            self.packed_at = now()
+    from django.utils.timezone import now
 
-        if self.status == "Shipped" and not self.shipped_at:
-            self.shipped_at = now()
+    if self.status == "Packed" and not self.packed_at:
+        self.packed_at = now()
 
-        if self.status == "Out for Delivery" and not self.out_for_delivery_at:
-            self.out_for_delivery_at = now()
+    if self.status == "Shipped" and not self.shipped_at:
+        self.shipped_at = now()
 
-        if self.status == "Delivered" and not self.delivered_at:
-            self.delivered_at = now()
+    if self.status == "Out for Delivery" and not self.out_for_delivery_at:
+        self.out_for_delivery_at = now()
 
-        if self.status == "Cancelled" and not self.cancelled_at:
-            self.cancelled_at = now()
+    if self.status == "Delivered" and not self.delivered_at:
+        self.delivered_at = now()
 
-        super().save(*args, **kwargs)
-        
+    if self.status == "Cancelled" and not self.cancelled_at:
+        self.cancelled_at = now()
 
-    def __str__(self):
-        return f"Order #{self.id} - {self.user.username}"
+    super().save(*args, **kwargs)
 
+
+# =========================
+# UPDATE CANCEL STATUS
+# =========================
+def update_cancel_status(self):
+
+    if (
+        self.can_cancel and
+        self.created_at and
+        timezone.now() > self.created_at + timedelta(seconds=30)
+    ):
+        self.can_cancel = False
+        super(Order, self).save(update_fields=["can_cancel"])
+
+
+def __str__(self):
+    return f"Order #{self.id} - {self.user.username}"
 
 # =========================
 # ORDER ITEMS
