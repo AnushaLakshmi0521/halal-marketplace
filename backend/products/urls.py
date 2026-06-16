@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+
 from .views import (
     get_products,
     CartViewSet,
@@ -8,7 +9,8 @@ from .views import (
     create_payment,
     verify_payment,
     get_orders,
-    cancel_order
+    cancel_order,
+    download_invoice,
     
 )
 
@@ -49,4 +51,9 @@ urlpatterns = [
         'cancel-order/<int:order_id>/',
         cancel_order
     ),
-]
+
+    path(
+    "download-invoice/<int:order_id>/",
+    download_invoice
+),
+]  

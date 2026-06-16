@@ -6,6 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+
 from .models import (
     Product,
     CartItem,
@@ -81,7 +84,7 @@ def get_products(request):
             "halal_certified": p.halal_certified,
             "ingredients": p.ingredients,
             "source": p.source,
-            "category": p.category,
+            "category": p.category, 
             "stock_quantity": p.stock_quantity,
 
             "stock_status": (
@@ -454,3 +457,58 @@ def cancel_order(request, order_id):
             {"error": "Order not found"},
             status=404
         )
+
+
+@api_view(["GET"])
+def download_invoice(request, order_id):
+    order = Order.objects.get(id=order_id)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = (
+        f'attachment; filename="invoice_{order.id}.pdf"'
+    )
+
+    p = canvas.Canvas(response)
+
+    # Header
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(50, 800, "HAL TAYYIB")
+    p.setFont("Helvetica", 10)
+    p.drawString(50, 785, "Quality You Can Trust")
+
+    # Order details
+    p.setFont("Helvetica", 10)
+    p.drawString(50, 750, f"Invoice #: {order.id}")
+    p.drawString(50, 735, f"Customer: {order.name}")
+    p.drawString(50, 720, f"Phone: {order.phone}")
+
+    p.drawString(50, 700, "Address:")
+    p.drawString(50, 685, str(order.address)[:90])  # prevent overflow
+
+    # Products section
+    y = 650
+    p.setFont("Helvetica-Bold", 11)
+    p.drawString(50, y, "Products")
+    y -= 20
+
+    p.setFont("Helvetica", 10)
+
+    for item in order.items.all():
+        line = f"{item.product.name} x {item.quantity} = ₹{item.price * item.quantity}"
+        p.drawString(50, y, line[:100])  # safety cut
+        y -= 20
+
+        if y < 100:  # page break safety
+            p.showPage()
+            y = 800
+
+    # Total
+    y -= 10
+    p.setFont("Helvetica-Bold", 11)
+    p.drawString(50, y, f"Total Amount: ₹{order.total_amount}")
+
+    # FINAL IMPORTANT STEP
+    p.showPage()
+    p.save()
+
+    return response
