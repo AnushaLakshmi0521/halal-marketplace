@@ -336,7 +336,7 @@ def get_orders(request):
     data = []
 
     for order in orders:
-        #order.update_cancel_status()
+        order.update_cancel_status()
 
         items = []
 
@@ -421,7 +421,10 @@ class WishlistViewSet(viewsets.ModelViewSet):
             **kwargs
         )
     
-@api_view(['POST'])
+from django.utils import timezone
+from datetime import timedelta
+
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def cancel_order(request, order_id):
 
@@ -431,21 +434,15 @@ def cancel_order(request, order_id):
             user=request.user
         )
 
-        order.update_cancel_status()
-
-        if not order.can_cancel:
+        # 30 second check
+        if timezone.now() > order.created_at + timedelta(seconds=30):
             return Response(
                 {"error": "Cancellation time expired"},
                 status=400
             )
 
-        if order.status != "Placed":
-            return Response(
-                {"error": "Order cannot be cancelled"},
-                status=400
-            )
-
         order.status = "Cancelled"
+        order.can_cancel = False
         order.save()
 
         return Response({

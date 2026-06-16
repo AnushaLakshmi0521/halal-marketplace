@@ -189,6 +189,7 @@ class Order(models.Model):
             timezone.now() > self.created_at + timedelta(seconds=30)
         ):
             self.can_cancel = False
+            self.save(update_fields=["can_cancel"])
 
         from django.utils.timezone import now
 
