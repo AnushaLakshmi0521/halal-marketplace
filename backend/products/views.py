@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from reportlab.pdfgen import canvas
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 
 from .models import (
     Product,
@@ -20,6 +21,7 @@ from .models import (
   
 )
 from .serializers import (
+    ProductSerializer,
     CartItemSerializer,
     AddressSerializer,
     WishlistSerializer,
@@ -868,3 +870,14 @@ def add_review(request, product_id):
             "Review added successfully"
         }
     )
+@api_view(["GET"])
+def get_product(request, product_id):
+
+    product = get_object_or_404(
+        Product,
+        id=product_id
+    )
+
+    serializer = ProductSerializer(product)
+
+    return Response(serializer.data)

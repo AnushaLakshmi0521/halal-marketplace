@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     get_products,
+    get_product,
     CartViewSet,
     AddressViewSet,
     WishlistViewSet,
@@ -33,6 +34,7 @@ urlpatterns = [
     # PRODUCTS
     # =========================
     path('products/', get_products),
+    path('products/<int:product_id>/',get_product),
 
     # =========================
     # CART
