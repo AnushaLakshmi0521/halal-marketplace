@@ -120,6 +120,15 @@ class Order(models.Model):
         default="Pending"
     )
 
+    payment_method = models.CharField(
+    max_length=50,
+    default="Razorpay"
+    )
+
+    shipping_charge = models.FloatField(
+    default=0
+ )
+
     # ORDER STATUS
     status = models.CharField(
         max_length=50,

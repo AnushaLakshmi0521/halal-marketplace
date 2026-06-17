@@ -283,15 +283,25 @@ def verify_payment(request):
         )
 
         # ✅ CREATE ORDER
+        # ✅ CREATE ORDER
         order = Order.objects.create(
             user=user,
             name=data.get("name"),
             address=data.get("address"),
             phone=data.get("phone"),
+
             total_amount=total,
+
             payment_id=data.get("razorpay_payment_id"),
+
+            payment_method="Razorpay",
+
+            payment_status="Paid",
+
+            shipping_charge=0,
+
             status="Placed"
-        )
+      )
 
         # ✅ CREATE ORDER ITEMS
         for item in cart_items:
@@ -461,55 +471,334 @@ def cancel_order(request, order_id):
 
 @api_view(["GET"])
 def download_invoice(request, order_id):
+
+    from django.utils import timezone
+
     order = Order.objects.get(id=order_id)
 
-    response = HttpResponse(content_type="application/pdf")
+    invoice_no = (
+        f"HT-{order.created_at.year}-"
+        f"{str(order.id).zfill(6)}"
+    )
+
+    invoice_date = timezone.now().strftime(
+        "%d-%b-%Y"
+    )
+
+    order_date = order.created_at.strftime(
+        "%d-%b-%Y"
+    )
+
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
+
     response["Content-Disposition"] = (
         f'attachment; filename="invoice_{order.id}.pdf"'
     )
 
     p = canvas.Canvas(response)
 
-    # Header
-    p.setFont("Helvetica-Bold", 14)
+    # =========================
+    # HEADER
+    # =========================
+
+    p.setFont("Helvetica-Bold", 18)
     p.drawString(50, 800, "HAL TAYYIB")
+
     p.setFont("Helvetica", 10)
-    p.drawString(50, 785, "Quality You Can Trust")
+    p.drawString(
+        50,
+        785,
+        "Quality You Can Trust"
+    )
 
-    # Order details
-    p.setFont("Helvetica", 10)
-    p.drawString(50, 750, f"Invoice #: {order.id}")
-    p.drawString(50, 735, f"Customer: {order.name}")
-    p.drawString(50, 720, f"Phone: {order.phone}")
+    p.line(50, 775, 550, 775)
 
-    p.drawString(50, 700, "Address:")
-    p.drawString(50, 685, str(order.address)[:90])  # prevent overflow
+    # =========================
+    # INVOICE INFO
+    # =========================
 
-    # Products section
-    y = 650
+    p.setFont("Helvetica-Bold", 12)
+
+    p.drawString(
+        50,
+        745,
+        f"Invoice No: {invoice_no}"
+    )
+
+    p.setFont("Helvetica", 11)
+
+    p.drawString(
+        50,
+        725,
+        f"Invoice Date: {invoice_date}"
+    )
+
+    p.drawString(
+        300,
+        725,
+        f"Order Date: {order_date}"
+    )
+
+    # =========================
+    # CUSTOMER INFO
+    # =========================
+
+    p.setFont("Helvetica-Bold", 12)
+
+    p.drawString(
+        50,
+        690,
+        "Customer Information"
+    )
+
+    p.setFont("Helvetica", 11)
+
+    p.drawString(
+        50,
+        670,
+        f"Name: {order.name}"
+    )
+
+    p.drawString(
+        50,
+        650,
+        f"Phone: {order.phone}"
+    )
+
+    p.drawString(
+        50,
+        630,
+        f"Address: {str(order.address)[:70]}"
+    )
+
+    # =========================
+    # PAYMENT INFO
+    # =========================
+
+    p.setFont("Helvetica-Bold", 12)
+
+    p.drawString(
+        50,
+        595,
+        "Payment Information"
+    )
+
+    p.setFont("Helvetica", 11)
+
+    p.drawString(
+        50,
+        575,
+        f"Payment Method: {order.payment_method}"
+    )
+
+    p.drawString(
+        300,
+        575,
+        f"Payment Status: {order.payment_status}"
+    )
+
+    if order.payment_id:
+        p.drawString(
+            50,
+            555,
+            f"Payment ID: {order.payment_id}"
+        )
+
+    # =========================
+    # PRODUCT TABLE
+    # =========================
+
+    y = 510
+
     p.setFont("Helvetica-Bold", 11)
-    p.drawString(50, y, "Products")
+
+    p.drawString(50, y, "Product")
+    p.drawString(300, y, "Qty")
+    p.drawString(360, y, "Price")
+    p.drawString(460, y, "Total")
+
+    y -= 10
+
+    p.line(50, y, 550, y)
+
+    subtotal = 0
+
+    for item in order.items.all():
+
+        y -= 25
+
+        item_total = (
+            item.price *
+            item.quantity
+        )
+
+        subtotal += item_total
+
+        p.setFont("Helvetica", 10)
+
+        p.drawString(
+            50,
+            y,
+            str(item.product.name)[:30]
+        )
+
+        p.drawString(
+            300,
+            y,
+            str(item.quantity)
+        )
+
+        p.drawString(
+            360,
+            y,
+            f"₹{item.price}"
+        )
+
+        p.drawString(
+            460,
+            y,
+            f"₹{item_total}"
+        )
+
+    # =========================
+    # TOTALS
+    # =========================
+
+    y -= 40
+
+    p.line(
+        300,
+        y + 25,
+        550,
+        y + 25
+    )
+
+    p.setFont("Helvetica", 11)
+
+    p.drawString(
+        350,
+        y,
+        f"Subtotal: ₹{subtotal}"
+    )
+
+    y -= 20
+
+    p.drawString(
+        350,
+        y,
+        f"Shipping: ₹{order.shipping_charge}"
+    )
+
+    y -= 20
+
+    grand_total = (
+        subtotal +
+        order.shipping_charge
+    )
+
+    p.setFont("Helvetica-Bold", 12)
+
+    p.drawString(
+        350,
+        y,
+        f"Grand Total: ₹{grand_total}"
+    )
+
+    # =========================
+    # ORDER INFO
+    # =========================
+
+    y -= 50
+
+    p.setFont("Helvetica-Bold", 11)
+
+    p.drawString(
+        50,
+        y,
+        "Order Information"
+    )
+
     y -= 20
 
     p.setFont("Helvetica", 10)
 
-    for item in order.items.all():
-        line = f"{item.product.name} x {item.quantity} = ₹{item.price * item.quantity}"
-        p.drawString(50, y, line[:100])  # safety cut
-        y -= 20
+    p.drawString(
+        50,
+        y,
+        f"Order Status: {order.status}"
+    )
 
-        if y < 100:  # page break safety
-            p.showPage()
-            y = 800
+    y -= 20
 
-    # Total
-    y -= 10
-    p.setFont("Helvetica-Bold", 11)
-    p.drawString(50, y, f"Total Amount: ₹{order.total_amount}")
+    p.drawString(
+        50,
+        y,
+        f"Tracking ID: {order.tracking_id or 'Not Assigned'}"
+    )
 
-    # FINAL IMPORTANT STEP
-    #http://127.0.0.1:8000/products/download-invoice/1/
-    p.showPage()
+    # =========================
+    # FOOTER
+    # =========================
+
+    y -= 60
+
+    p.line(
+        50,
+        y + 20,
+        550,
+        y + 20
+    )
+
+    p.setFont(
+        "Helvetica-Bold",
+        11
+    )
+
+    p.drawString(
+        50,
+        y,
+        "Thank you for shopping with HAL TAYYIB!"
+    )
+
+    y -= 30
+
+    p.setFont(
+        "Helvetica",
+        9
+    )
+
+    p.drawString(
+        50,
+        y,
+        "Terms & Conditions:"
+    )
+
+    y -= 15
+
+    p.drawString(
+        60,
+        y,
+        "• Keep this invoice for future reference."
+    )
+
+    y -= 15
+
+    p.drawString(
+        60,
+        y,
+        "• Refunds are subject to company policy."
+    )
+
+    y -= 15
+
+    p.drawString(
+        60,
+        y,
+        "• Contact support for assistance."
+    )
+
     p.save()
 
     return response

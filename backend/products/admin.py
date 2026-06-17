@@ -83,19 +83,20 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
 
     list_display = (
-        "id",
-        "user",
-        "name",
-        "phone",
-        "status",
-        "can_cancel",
-        "payment_status",
-        "total_amount",
-        "tracking_id",
-        "estimated_delivery",
-        "created_at",
+    "id",
+    "user",
+    "name",
+    "phone",
+    "status",
+    "can_cancel",
+    "payment_method",
+    "payment_status",
+    "shipping_charge",
+    "total_amount",
+    "tracking_id",
+    "estimated_delivery",
+    "created_at",
     )
-
     list_filter = (
         "status",
         "payment_status",
@@ -132,10 +133,12 @@ class OrderAdmin(admin.ModelAdmin):
         ("Payment Information", {
             "fields": (
                 "payment_id",
+                "payment_method",
                 "payment_status",
+                "shipping_charge",
                 "total_amount",
             )
-        }),
+   }),
 
         ("Order Tracking", {
             "fields": (
