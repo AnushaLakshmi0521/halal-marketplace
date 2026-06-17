@@ -187,6 +187,8 @@ function Products() {
   className={`card ${
     item.stock_quantity <= 0 ? "outOfStockCard" : ""
   }`}
+  onClick={() => navigate(`/product/${item.id}`)}
+
 >
             <div
   className="heartBtn"
@@ -276,10 +278,13 @@ function Products() {
   ) : null}
 
   <button
-    className="button"
-    disabled={item.stock_quantity <= 0}
-    onClick={() => addToCart(item)}
-  >
+  className="button"
+  disabled={item.stock_quantity <= 0}
+  onClick={(e) => {
+    e.stopPropagation();
+    addToCart(item);
+  }}
+>
     {item.stock_quantity <= 0
       ? "Out Of Stock"
       : "Add To Cart"}

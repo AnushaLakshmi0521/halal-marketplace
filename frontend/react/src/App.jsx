@@ -15,6 +15,7 @@ import Signup from "./pages/Signup";
 import Orders from "./pages/Orders";
 import OrderSuccess from "./pages/OrderSuccess";
 import Wishlist from "./pages/Wishlist";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
   return (
@@ -46,6 +47,8 @@ function App() {
           <Route path="/order-success" element={<OrderSuccess />} />
 
           <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/product/:id" element={<ProductDetail />}
+/>
         </Routes>
       </main>
 
