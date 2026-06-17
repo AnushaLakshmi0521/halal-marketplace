@@ -11,6 +11,8 @@ from .views import (
     get_orders,
     cancel_order,
     download_invoice,
+    get_product_reviews,
+    add_review,
     
 )
 
@@ -55,5 +57,14 @@ urlpatterns = [
     path(
     "download-invoice/<int:order_id>/",
     download_invoice
-),
+    ),
+    path(
+    "reviews/<int:product_id>/",
+    get_product_reviews
+    ),
+
+    path(
+    "add-review/<int:product_id>/",
+    add_review
+    ),   
 ]  

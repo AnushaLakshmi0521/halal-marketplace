@@ -8,6 +8,7 @@ from .models import (
     OrderItem,
     Address,
     WishlistItem,
+    Review,
     
 )
 
@@ -177,3 +178,14 @@ class WishlistSerializer(serializers.ModelSerializer):
             "product_detail",
             "created_at"
         ]
+
+class ReviewSerializer(serializers.ModelSerializer):
+
+    username = serializers.CharField(
+        source="user.username",
+        read_only=True
+    )
+
+    class Meta:
+        model = Review
+        fields = "__all__"

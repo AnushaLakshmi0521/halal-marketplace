@@ -16,12 +16,14 @@ from .models import (
     OrderItem,
     Address,
     WishlistItem,
+    Review,
   
 )
 from .serializers import (
     CartItemSerializer,
     AddressSerializer,
-    WishlistSerializer
+    WishlistSerializer,
+    ReviewSerializer
 )
 
 import razorpay
@@ -802,3 +804,67 @@ def download_invoice(request, order_id):
     p.save()
 
     return response
+# =========================
+# GET PRODUCT REVIEWS
+# =========================
+@api_view(["GET"])
+def get_product_reviews(request, product_id):
+
+    reviews = Review.objects.filter(
+        product_id=product_id
+    ).order_by("-created_at")
+
+    serializer = ReviewSerializer(
+        reviews,
+        many=True
+    )
+
+    return Response(serializer.data)
+
+
+# =========================
+# ADD REVIEW
+# =========================
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def add_review(request, product_id):
+
+    product = Product.objects.get(
+        id=product_id
+    )
+
+    if Review.objects.filter(
+        user=request.user,
+        product=product
+    ).exists():
+
+        return Response(
+            {
+                "error":
+                "You already reviewed this product"
+            },
+            status=400
+        )
+
+    rating = request.data.get("rating")
+    comment = request.data.get("comment")
+
+    if not rating:
+        return Response(
+            {"error": "Rating is required"},
+            status=400
+        )
+
+    Review.objects.create(
+        user=request.user,
+        product=product,
+        rating=rating,
+        comment=comment
+    )
+
+    return Response(
+        {
+            "message":
+            "Review added successfully"
+        }
+    )
