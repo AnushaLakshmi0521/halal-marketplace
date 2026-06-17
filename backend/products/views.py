@@ -871,13 +871,88 @@ def add_review(request, product_id):
         }
     )
 @api_view(["GET"])
-def get_product(request, product_id):
+def get_product_reviews(request, product_id):
 
-    product = get_object_or_404(
-        Product,
-        id=product_id
+    sort = request.GET.get("sort", "latest")
+
+    reviews = Review.objects.filter(product_id=product_id)
+
+    if sort == "rating":
+        reviews = reviews.order_by("-rating")
+    elif sort == "helpful":
+        reviews = reviews.order_by("-helpful_count")
+    else:
+        reviews = reviews.order_by("-created_at")
+
+    serializer = ReviewSerializer(reviews, many=True)
+    return Response(serializer.data)
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def add_review(request, product_id):
+
+    product = get_object_or_404(Product, id=product_id)
+
+    if Review.objects.filter(user=request.user, product=product).exists():
+        return Response(
+            {"error": "You already reviewed this product"},
+            status=400
+        )
+
+    review = Review.objects.create(
+        user=request.user,
+        product=product,
+        rating=request.data.get("rating"),
+        comment=request.data.get("comment"),
+        image=request.FILES.get("image")
     )
 
-    serializer = ProductSerializer(product)
+    return Response(ReviewSerializer(review).data)
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_review(request, review_id):
 
+    review = get_object_or_404(
+        Review,
+        id=review_id,
+        user=request.user
+    )
+
+    review.rating = request.data.get("rating", review.rating)
+    review.comment = request.data.get("comment", review.comment)
+
+    if request.FILES.get("image"):
+        review.image = request.FILES.get("image")
+
+    review.save()
+
+    return Response(ReviewSerializer(review).data)
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_review(request, review_id):
+
+    review = get_object_or_404(
+        Review,
+        id=review_id,
+        user=request.user
+    )
+
+    review.delete()
+
+    return Response({"message": "Deleted successfully"})
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def mark_helpful(request, review_id):
+
+    review = get_object_or_404(Review, id=review_id)
+
+    review.helpful_count += 1
+    review.save()
+
+    return Response({
+        "helpful_count": review.helpful_count
+    })
+@api_view(["GET"])
+def get_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    serializer = ProductSerializer(product)
     return Response(serializer.data)

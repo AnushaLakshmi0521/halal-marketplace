@@ -328,10 +328,7 @@ class WishlistItem(models.Model):
 
 class Review(models.Model):
 
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     product = models.ForeignKey(
         Product,
@@ -343,12 +340,16 @@ class Review(models.Model):
 
     comment = models.TextField()
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    image = models.ImageField(upload_to="reviews/", null=True, blank=True)
+
+    helpful_count = models.IntegerField(default=0)
+
+    is_verified_buyer = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ("user", "product")
 
     def __str__(self):
-        return f"{self.user.username} - {self.product.name} ({self.rating}⭐)"
+        return f"{self.user.username} - {self.product.name}"

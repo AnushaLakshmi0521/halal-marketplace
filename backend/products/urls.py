@@ -1,3 +1,4 @@
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
@@ -12,32 +13,36 @@ from .views import (
     get_orders,
     cancel_order,
     download_invoice,
+
+    # REVIEWS
     get_product_reviews,
     add_review,
-    
+    update_review,
+    delete_review,
+    mark_helpful,
 )
 
+# =========================
+# ROUTERS
+# =========================
 router = DefaultRouter()
 router.register(r'cart', CartViewSet, basename="cart")
-router.register(
-    r'addresses',
-    AddressViewSet,
-    basename="addresses"
-)
-router.register(
-    r'wishlist',
-    WishlistViewSet,
-    basename='wishlist'
-)
+router.register(r'addresses', AddressViewSet, basename="addresses")
+router.register(r'wishlist', WishlistViewSet, basename="wishlist")
+
+# =========================
+# URL PATTERNS
+# =========================
 urlpatterns = [
+
     # =========================
     # PRODUCTS
     # =========================
     path('products/', get_products),
-    path('products/<int:product_id>/',get_product),
+    path('products/<int:product_id>/', get_product),
 
     # =========================
-    # CART
+    # CART / ADDRESS / WISHLIST
     # =========================
     path('', include(router.urls)),
 
@@ -48,25 +53,19 @@ urlpatterns = [
     path('verify-payment/', verify_payment),
 
     # =========================
-    # ORDERS (NEW)
+    # ORDERS
     # =========================
     path('orders/', get_orders),
-    path(
-        'cancel-order/<int:order_id>/',
-        cancel_order
-    ),
+    path('cancel-order/<int:order_id>/', cancel_order),
+    path('download-invoice/<int:order_id>/', download_invoice),
 
-    path(
-    "download-invoice/<int:order_id>/",
-    download_invoice
-    ),
-    path(
-    "reviews/<int:product_id>/",
-    get_product_reviews
-    ),
+    # =========================
+    # REVIEWS ⭐ FINAL
+    # =========================
+    path('reviews/<int:product_id>/', get_product_reviews),
+    path('add-review/<int:product_id>/', add_review),
 
-    path(
-    "add-review/<int:product_id>/",
-    add_review
-    ),   
-]  
+    path('review/update/<int:review_id>/', update_review),
+    path('review/delete/<int:review_id>/', delete_review),
+    path('review/helpful/<int:review_id>/', mark_helpful),
+]

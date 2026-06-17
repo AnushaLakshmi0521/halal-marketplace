@@ -181,11 +181,20 @@ class WishlistSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
 
-    username = serializers.CharField(
-        source="user.username",
-        read_only=True
-    )
+    username = serializers.CharField(source="user.username", read_only=True)
 
     class Meta:
         model = Review
-        fields = "__all__"
+        fields = [
+            "id",
+            "username",
+            "rating",
+            "comment",
+            "image",
+            "helpful_count",
+            "is_verified_buyer",
+            "created_at",
+            "product"
+        ]
+
+        read_only_fields = ["user", "created_at"]
