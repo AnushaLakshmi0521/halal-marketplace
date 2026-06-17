@@ -72,6 +72,42 @@ useEffect(() => {
     console.log(err);
   }
 };
+  const downloadInvoice = async (orderId) => {
+  try {
+    const token = localStorage.getItem("access");
+
+    const response = await fetch(
+      `https://halal-marketplace.onrender.com/products/download-invoice/${orderId}/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to download invoice");
+    }
+
+    const blob = await response.blob();
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `invoice_${orderId}.pdf`;
+
+    document.body.appendChild(link);
+    link.click();
+
+    link.remove();
+    window.URL.revokeObjectURL(url);
+
+  } catch (err) {
+    console.log(err);
+    alert("Failed to download invoice");
+  }
+};
 
   const steps = [
     "Placed",
@@ -319,18 +355,31 @@ useEffect(() => {
 
                     {/* TOTAL */}
 
-                    <div className="totalBox">
-                      <h3>Total: ₹{order.total_amount}</h3>
-                    </div>
+                    
   
-{order.can_cancel && (
+<div className="totalBox">
+  <h3>Total: ₹{order.total_amount}</h3>
+</div>
+
+<div className="orderActions">
+
   <button
-    className="cancelBtn"
-    onClick={() => cancelOrder(order.id)}
+    className="invoiceBtn"
+    onClick={() => downloadInvoice(order.id)}
   >
-    Cancel Order
+    📄 Download Invoice
   </button>
-)}
+
+  {order.can_cancel && (
+    <button
+      className="cancelBtn"
+      onClick={() => cancelOrder(order.id)}
+    >
+      Cancel Order
+    </button>
+  )}
+
+</div>
                   </div>
                 )}
 
