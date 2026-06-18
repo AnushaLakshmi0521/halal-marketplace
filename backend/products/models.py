@@ -326,6 +326,8 @@ class WishlistItem(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.product.name}"
 
+
+
 class Review(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)

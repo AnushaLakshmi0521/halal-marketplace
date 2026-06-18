@@ -62,10 +62,29 @@ urlpatterns = [
     # =========================
     # REVIEWS ⭐ FINAL
     # =========================
-    path('reviews/<int:product_id>/', get_product_reviews),
-    path('add-review/<int:product_id>/', add_review),
+    # REVIEWS
+    path(
+       "products/<int:product_id>/reviews/",
+        get_product_reviews
+    ),
 
-    path('review/update/<int:review_id>/', update_review),
-    path('review/delete/<int:review_id>/', delete_review),
-    path('review/helpful/<int:review_id>/', mark_helpful),
+    path(
+       "products/<int:product_id>/reviews/add/",
+        add_review
+    ),
+
+    path(
+       "reviews/<int:review_id>/update/",
+        update_review
+   ),
+
+    path(
+        "reviews/<int:review_id>/delete/",
+        delete_review
+    ),
+
+    path(
+        "reviews/<int:review_id>/helpful/",
+        mark_helpful
+    ),
 ]
