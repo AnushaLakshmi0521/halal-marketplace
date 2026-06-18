@@ -30,6 +30,7 @@ export function AuthProvider({ children }) {
     localStorage.setItem("access", data.access);
     localStorage.setItem("refresh", data.refresh);
     localStorage.setItem("username", data.username);
+    localStorage.setItem("user_id", data.id);
 
     setAuth({
       user: data.username,
@@ -43,6 +44,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
     localStorage.removeItem("username");
+    localStorage.removeItem("user_id");
 
     setAuth({
       user: null,

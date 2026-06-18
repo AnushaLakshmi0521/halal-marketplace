@@ -5,7 +5,8 @@ const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const { auth } = useAuth(); // ✅ listen to login/logout
-
+  
+  
   const [cartCount, setCartCount] = useState(0);
 
   const API_CART =   "https://halal-marketplace.onrender.com/products/cart/"; // ✅ FIXED URL

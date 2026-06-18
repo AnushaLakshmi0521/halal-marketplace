@@ -52,8 +52,9 @@ function ProductDetail() {
   /* ================= REVIEWS ================= */
   const loadReviews = async () => {
     try {
-      const res = await fetch(
-        `https://halal-marketplace.onrender.com/products/reviews/${id}/`
+     const res = await fetch(
+  `https://halal-marketplace.onrender.com/products/products/${id}/reviews/`
+
       );
 
       const data = await res.json();
@@ -81,7 +82,7 @@ function ProductDetail() {
     if (!token) return alert("Login required");
 
     const res = await fetch(
-      `https://halal-marketplace.onrender.com/products/add-review/${id}/`,
+     `https://halal-marketplace.onrender.com/products/products/${id}/reviews/add/`,
       {
         method: "POST",
         headers: {
@@ -109,7 +110,7 @@ function ProductDetail() {
     const token = getToken();
 
     await fetch(
-      `https://halal-marketplace.onrender.com/products/reviews/${reviewId}/`,
+ `https://halal-marketplace.onrender.com/products/reviews/${reviewId}/delete/`,
       {
         method: "DELETE",
         headers: {
@@ -132,7 +133,7 @@ function ProductDetail() {
     const token = getToken();
 
     const res = await fetch(
-      `https://halal-marketplace.onrender.com/products/reviews/${reviewId}/`,
+ `https://halal-marketplace.onrender.com/products/reviews/${reviewId}/update/`,
       {
         method: "PATCH",
         headers: {
@@ -241,22 +242,46 @@ function ProductDetail() {
                   </>
                 ) : (
                   <>
-                    <div className="starsRead">
-                      {"★".repeat(r.rating)}
-                      {"☆".repeat(5 - r.rating)}
-                    </div>
+                    <div className="reviewHeader">
+  <div>
+    <strong>{r.username || "Anonymous User"}</strong>
+  </div>
 
-                    <p>{r.comment}</p>
+  {r.is_verified_buyer && (
+    <span className="verifiedBadge">
+      ✓ Verified Buyer
+    </span>
+  )}
+</div>
 
-                    <div className="actions">
-                      <button onClick={() => startEdit(r)}>
-                        Edit
-                      </button>
+<div className="starsRead">
+  {"★".repeat(r.rating)}
+  {"☆".repeat(5 - r.rating)}
+</div>
 
-                      <button onClick={() => deleteReview(r.id)}>
-                        Delete
-                      </button>
-                    </div>
+<p>{r.comment}</p>
+
+{r.image && (
+  <img
+    src={r.image}
+    alt="Review"
+    className="reviewImage"
+  />
+)}
+
+                 
+
+                   {String(r.user_id) === localStorage.getItem("user_id") && (
+  <div className="actions">
+    <button onClick={() => startEdit(r)}>
+      Edit
+    </button>
+
+    <button onClick={() => deleteReview(r.id)}>
+      Delete
+    </button>
+  </div>
+)}
                   </>
                 )}
 

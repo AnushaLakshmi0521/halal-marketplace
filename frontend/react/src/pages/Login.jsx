@@ -19,6 +19,7 @@ function Login() {
     });
 
     const data = await res.json();
+    console.log("LOGIN RESPONSE:", data);
 
     if (data.access) {
       login(data); // ✅ ONLY THIS (handles localStorage + state)

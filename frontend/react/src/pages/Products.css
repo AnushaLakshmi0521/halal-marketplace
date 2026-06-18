@@ -307,4 +307,33 @@
   font-weight: bold;
   z-index: 100;
 }
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.reviewHeader strong {
+  color: #111827;
+  font-size: 15px;
+}
+
+.verifiedBadge {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.reviewImage {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-top: 10px;
+  border: 1px solid #e5e7eb;
+}
  
