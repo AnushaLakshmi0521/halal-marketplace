@@ -129,6 +129,39 @@ function ProductDetail() {
     setEditComment(r.comment);
   };
 
+  const addToCart = async () => {
+  const token = localStorage.getItem("access");
+
+  if (!token) {
+    alert("Please login first");
+    return;
+  }
+
+  const res = await fetch(
+   "https://halal-marketplace.onrender.com/products/cart/",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        product: product.id,
+        quantity: 1,
+      }),
+    }
+  );
+
+  const data = await res.json();
+  console.log("ADD TO CART RESPONSE:", data);
+
+  if (!res.ok) {
+    alert(data.error || "Failed to add to cart");
+  } else {
+    alert("Added to cart");
+  }
+};
+
   const updateReview = async (reviewId) => {
     const token = getToken();
 
@@ -180,7 +213,9 @@ function ProductDetail() {
 
         <p>{product.description}</p>
 
-        <button className="cartBtn">Add to Cart</button>
+        <button className="cartBtn" onClick={addToCart}>
+  Add to Cart
+</button>
 
         {/* ================= REVIEW FORM ================= */}
         <div className="reviewBox">
@@ -282,7 +317,7 @@ function ProductDetail() {
     </button>
   </div>
 )}
-                  </>
+                  </> 
                 )}
 
               </div>
