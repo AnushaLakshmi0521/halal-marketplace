@@ -219,7 +219,55 @@
 .actions button:last-child:hover {
   background: #dc2626;
 }
+/* SMALL BUTTONS (FIX YOUR BIG BUTTON ISSUE) */
+.smallBtn {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #16a34a;
+  color: white;
+}
 
+.smallBtn.buy {
+  background: orange;
+}
+
+/* QTY CLEAN LOOK */
+.qtyBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.qtyBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: #16a34a;
+  color: white;
+  cursor: pointer;
+}
+
+.qtyText {
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* WISHLIST HEART */
+.wishlistIcon {
+  font-size: 22px;
+  cursor: pointer;
+  color: #999;
+}
+
+.wishlistIcon.active {
+  color: red;
+}
 /* =========================
    RESPONSIVE
 ========================= */

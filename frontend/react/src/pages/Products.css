@@ -336,4 +336,28 @@
   margin-top: 10px;
   border: 1px solid #e5e7eb;
 }
+.wishlistIcon {
+  font-size: 26px;
+  cursor: pointer;
+  color: #999;
+  transition: 0.2s;
+}
+
+.wishlistIcon.active {
+  color: red;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.buyBtn {
+  background: orange;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+}
  

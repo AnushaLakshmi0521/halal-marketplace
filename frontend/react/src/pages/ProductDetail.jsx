@@ -1,10 +1,11 @@
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./ProductDetail.css";
 
 function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,6 +19,8 @@ function ProductDetail() {
   const [editingId, setEditingId] = useState(null);
   const [editRating, setEditRating] = useState(0);
   const [editComment, setEditComment] = useState("");
+
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   const getToken = () => localStorage.getItem("access");
 
@@ -52,9 +55,8 @@ function ProductDetail() {
   /* ================= REVIEWS ================= */
   const loadReviews = async () => {
     try {
-     const res = await fetch(
-  `https://halal-marketplace.onrender.com/products/products/${id}/reviews/`
-
+      const res = await fetch(
+        `https://halal-marketplace.onrender.com/products/products/${id}/reviews/`
       );
 
       const data = await res.json();
@@ -68,6 +70,32 @@ function ProductDetail() {
     loadReviews();
   }, [id]);
 
+  /* ================= WISHLIST SYNC ================= */
+  useEffect(() => {
+    if (!product) return;
+
+    const checkWishlist = async () => {
+      const token = getToken();
+      if (!token) return;
+
+      const res = await fetch(
+        "https://halal-marketplace.onrender.com/products/wishlist/",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      const exists = data.some((item) => item.product === product.id);
+      setIsWishlisted(exists);
+    };
+
+    checkWishlist();
+  }, [product]);
+
   /* ================= AVERAGE RATING ================= */
   const avg =
     reviews.length > 0
@@ -76,13 +104,17 @@ function ProductDetail() {
         ).toFixed(1)
       : 0;
 
-  /* ================= ADD REVIEW ================= */
-  const submitReview = async () => {
+  /* ================= ADD TO CART ================= */
+  const addToCart = async () => {
     const token = getToken();
-    if (!token) return alert("Login required");
+
+    if (!token) {
+      alert("Please login first");
+      return;
+    }
 
     const res = await fetch(
-     `https://halal-marketplace.onrender.com/products/products/${id}/reviews/add/`,
+      "https://halal-marketplace.onrender.com/products/cart/",
       {
         method: "POST",
         headers: {
@@ -90,55 +122,38 @@ function ProductDetail() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          rating,
-          comment,
+          product: product.id,
+          quantity: 1,
         }),
       }
     );
 
+    
+
     const data = await res.json();
 
-    if (!res.ok) return alert(data.error || "Failed");
-
-    setRating(0);
-    setComment("");
-    loadReviews();
+    if (!res.ok) {
+      alert(data.error || "Failed to add to cart");
+    } else {
+      alert("Added to cart");
+    }
   };
 
-  /* ================= DELETE ================= */
-  const deleteReview = async (reviewId) => {
-    const token = getToken();
-
-    await fetch(
- `https://halal-marketplace.onrender.com/products/reviews/${reviewId}/delete/`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    setReviews((prev) => prev.filter((r) => r.id !== reviewId));
-  };
-
-  /* ================= EDIT ================= */
-  const startEdit = (r) => {
-    setEditingId(r.id);
-    setEditRating(r.rating);
-    setEditComment(r.comment);
-  };
-
-  const addToCart = async () => {
-  const token = localStorage.getItem("access");
+  const submitReview = async () => {
+  const token = getToken();
 
   if (!token) {
     alert("Please login first");
     return;
   }
 
+  if (!rating || !comment) {
+    alert("Please add rating and comment");
+    return;
+  }
+
   const res = await fetch(
-   "https://halal-marketplace.onrender.com/products/cart/",
+    `https://halal-marketplace.onrender.com/products/products/${id}/reviews/add/`,
     {
       method: "POST",
       headers: {
@@ -146,47 +161,72 @@ function ProductDetail() {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        product: product.id,
-        quantity: 1,
+        rating,
+        comment,
       }),
     }
   );
 
   const data = await res.json();
-  console.log("ADD TO CART RESPONSE:", data);
 
   if (!res.ok) {
-    alert(data.error || "Failed to add to cart");
-  } else {
-    alert("Added to cart");
+    alert(data.error || "Failed to add review");
+    return;
   }
+
+  setRating(0);
+  setComment("");
+  loadReviews();
 };
 
-  const updateReview = async (reviewId) => {
+  /* ================= BUY NOW ================= */
+  const buyNow = () => {
+  const token = getToken();
+
+  if (!token) {
+    alert("Please login first");
+    return;
+  }
+
+  navigate("/checkout", {
+    state: {
+      buyNowItem: {
+        product_detail: product,
+        quantity: 1,
+      },
+    },
+  });
+};
+
+  /* ================= WISHLIST TOGGLE ================= */
+  const toggleWishlist = async () => {
     const token = getToken();
 
+    if (!token) {
+      alert("Login required");
+      return;
+    }
+
     const res = await fetch(
- `https://halal-marketplace.onrender.com/products/reviews/${reviewId}/update/`,
+      "https://halal-marketplace.onrender.com/products/wishlist/",
       {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          rating: editRating,
-          comment: editComment,
+          product: product.id,
         }),
       }
     );
 
-    const data = await res.json();
-
-    setReviews((prev) =>
-      prev.map((r) => (r.id === reviewId ? data : r))
-    );
-
-    setEditingId(null);
+    if (res.ok) {
+      setIsWishlisted(!isWishlisted);
+    } else {
+      const data = await res.json();
+      alert(data.message || "Failed");
+    }
   };
 
   /* ================= LOADING ================= */
@@ -197,15 +237,24 @@ function ProductDetail() {
   return (
     <div className="pdContainer">
 
-      {/* LEFT IMAGE */}
+      {/* LEFT */}
       <div className="pdLeft">
         <img src={getImage(product.image)} alt={product.name} />
       </div>
 
-      {/* RIGHT INFO */}
+      {/* RIGHT */}
       <div className="pdRight">
 
-        <h1>{product.name}</h1>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <h1>{product.name}</h1>
+
+          <span
+            className={`wishlistIcon ${isWishlisted ? "active" : ""}`}
+            onClick={toggleWishlist}
+          >
+            ♥
+          </span>
+        </div>
 
         <h2 className="price">₹ {product.price}</h2>
 
@@ -213,11 +262,19 @@ function ProductDetail() {
 
         <p>{product.description}</p>
 
-        <button className="cartBtn" onClick={addToCart}>
-  Add to Cart
-</button>
+        <div className="actionButtons">
 
-        {/* ================= REVIEW FORM ================= */}
+          <button className="cartBtn" onClick={addToCart}>
+            Add to Cart
+          </button>
+
+          <button className="buyBtn" onClick={buyNow}>
+            Buy Now
+          </button>
+
+        </div>
+
+        {/* REVIEWS */}
         <div className="reviewBox">
 
           <h2>Reviews</h2>
@@ -242,93 +299,28 @@ function ProductDetail() {
 
           <button onClick={submitReview}>Submit</button>
 
-          {/* ================= REVIEWS LIST ================= */}
+          {/* LIST */}
           <div className="reviewList">
-
             {reviews.map((r) => (
               <div key={r.id} className="reviewCard">
 
-                {editingId === r.id ? (
-                  <>
-                    <div className="stars">
-                      {[1,2,3,4,5].map(n => (
-                        <span
-                          key={n}
-                          onClick={() => setEditRating(n)}
-                          className={n <= editRating ? "activeStar" : ""}
-                        >
-                          ★
-                        </span>
-                      ))}
-                    </div>
+                <strong>{r.username || "Anonymous"}</strong>
 
-                    <textarea
-                      value={editComment}
-                      onChange={(e) => setEditComment(e.target.value)}
-                    />
+                <div className="starsRead">
+                  {"★".repeat(r.rating)}
+                  {"☆".repeat(5 - r.rating)}
+                </div>
 
-                    <button onClick={() => updateReview(r.id)}>
-                      Save
-                    </button>
-
-                    <button onClick={() => setEditingId(null)}>
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <div className="reviewHeader">
-  <div>
-    <strong>{r.username || "Anonymous User"}</strong>
-  </div>
-
-  {r.is_verified_buyer && (
-    <span className="verifiedBadge">
-      ✓ Verified Buyer
-    </span>
-  )}
-</div>
-
-<div className="starsRead">
-  {"★".repeat(r.rating)}
-  {"☆".repeat(5 - r.rating)}
-</div>
-
-<p>{r.comment}</p>
-
-{r.image && (
-  <img
-    src={r.image}
-    alt="Review"
-    className="reviewImage"
-  />
-)}
-
-                 
-
-                   {String(r.user_id) === localStorage.getItem("user_id") && (
-  <div className="actions">
-    <button onClick={() => startEdit(r)}>
-      Edit
-    </button>
-
-    <button onClick={() => deleteReview(r.id)}>
-      Delete
-    </button>
-  </div>
-)}
-                  </> 
-                )}
+                <p>{r.comment}</p>
+                
 
               </div>
             ))}
-
           </div>
 
         </div>
 
       </div>
-
     </div>
   );
 }
