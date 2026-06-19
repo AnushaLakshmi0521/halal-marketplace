@@ -24,6 +24,8 @@ function ProductDetail() {
 
   const getToken = () => localStorage.getItem("access");
 
+  const [quantity, setQuantity] = useState(1);
+
   const getImage = (img) => {
     if (!img) return "https://via.placeholder.com/300";
     if (img.startsWith("http")) return img;
@@ -123,7 +125,7 @@ function ProductDetail() {
         },
         body: JSON.stringify({
           product: product.id,
-          quantity: 1,
+          quantity: quantity,
         }),
       }
     );
@@ -192,10 +194,11 @@ function ProductDetail() {
     state: {
       buyNowItem: {
         product_detail: product,
-        quantity: 1,
+        quantity: quantity,
       },
     },
   });
+
 };
 
   /* ================= WISHLIST TOGGLE ================= */
@@ -260,7 +263,27 @@ function ProductDetail() {
 
         <h3>⭐ {avg} ({reviews.length})</h3>
 
-        <p>{product.description}</p>
+        <p>{product.description}</p>  
+
+        <div className="qtyBox">
+
+  <button 
+    className="qtyBtn"
+    onClick={() => setQuantity(q => Math.max(1, q - 1))}
+  >
+    −
+  </button>
+
+  <span className="qtyText">{quantity}</span>
+
+  <button 
+    className="qtyBtn"
+    onClick={() => setQuantity(q => q + 1)}
+  >
+    +
+  </button>
+
+</div>
 
         <div className="actionButtons">
 
