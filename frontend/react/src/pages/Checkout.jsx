@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 function Checkout() {
 
@@ -11,6 +12,9 @@ function Checkout() {
   const [showAddressForm, setShowAddressForm] = useState(false);
 
   const [editingAddressId, setEditingAddressId] = useState(null);
+  const location = useLocation();
+
+const buyNowItem = location.state?.buyNowItem;
 
   const [addressForm, setAddressForm] = useState({
     full_name: "",
@@ -260,15 +264,14 @@ function Checkout() {
     setShowAddressForm(true);
   };
 
-  const total = cart.reduce((sum, item) => {
+  const items = buyNowItem ? [buyNowItem] : cart;
 
-    return (
-      sum +
-      (item.product_detail?.price || 0) *
-      item.quantity
-    );
+const total = items.reduce((sum, item) => {
+  const price =
+    item.product_detail?.price || 0;
 
-  }, 0);
+  return sum + price * item.quantity;
+}, 0);
 
   const handleChange = (e) => {
 
@@ -664,7 +667,7 @@ function Checkout() {
         ) : (
 
           <>
-            {cart.map((item) => (
+            {items.map((item) => (
 
               <div
                 key={item.id}
