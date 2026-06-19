@@ -22,6 +22,7 @@ function Login() {
     console.log("LOGIN RESPONSE:", data);
 
     if (data.access) {
+      console.log("USER ID:", data.id);
       login(data); // ✅ ONLY THIS (handles localStorage + state)
 
       alert("Login successful");
