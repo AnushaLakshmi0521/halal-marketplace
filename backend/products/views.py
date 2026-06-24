@@ -101,6 +101,10 @@ def get_products(request):
             ),
 
             "stock_left": p.stock_quantity,
+            "discount_percent": p.discount_percent,
+            "sale_price": p.sale_price,
+
+            
             #"estimated_delivery": order.estimated_delivery,
             "image": p.image.url if p.image else None
         })
