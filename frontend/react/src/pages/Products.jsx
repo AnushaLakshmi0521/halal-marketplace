@@ -31,11 +31,14 @@ function Products() {
 
   /* FETCH PRODUCTS */
   useEffect(() => {
-    fetch(API_PRODUCTS)
-      .then((res) => res.json())
-      .then((data) => setProducts(Array.isArray(data) ? data : []))
-      .catch(console.log);
-  }, []);
+  fetch(API_PRODUCTS)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      setProducts(Array.isArray(data) ? data : []);
+    })
+    .catch(console.log);
+}, []);
 
   /* LOAD CART */
   const loadCart = async () => {
@@ -182,6 +185,7 @@ function Products() {
 
         <div className="grid">
           {filteredProducts.map((item) => (
+            
           <div
   key={item.id}
   className={`card ${
@@ -248,6 +252,12 @@ function Products() {
 )}
 </div>
 
+{item.discount_percent > 0 && (
+  <div className="saleBadge">
+    {item.discount_percent}% OFF
+  </div>
+)}
+
               <img
                 src={
                   item.image
@@ -264,8 +274,27 @@ function Products() {
   <h3>{item.name}</h3>
 
   <p className="desc">{item.description}</p>
+   
 
-  <p className="price">₹ {item.price}</p>
+{item.discount_percent > 0 ? (
+  <>
+    <p className="oldPrice">
+      ₹ {item.price}
+    </p>
+
+    <p className="price">
+      ₹ {item.sale_price}
+    </p>
+
+    <p className="discountTag">
+      {item.discount_percent}% OFF
+    </p>
+  </>
+) : (
+  <p className="price">
+    ₹ {item.price}
+  </p>
+)}
 
   {item.stock_quantity <= 0 ? (
     <p className="outStockText">
