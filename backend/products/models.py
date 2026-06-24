@@ -50,6 +50,27 @@ class Product(models.Model):
     default=10
     )
 
+    discount_percent = models.IntegerField(
+    default=0
+    )
+
+    sale_price = models.FloatField(
+    null=True,
+    blank=True
+    )
+
+    def save(self, *args, **kwargs):
+
+        if self.discount_percent > 0:
+           self.sale_price = (
+              self.price -
+               (self.price * self.discount_percent / 100)
+        )
+        else:
+            self.sale_price = self.price
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 

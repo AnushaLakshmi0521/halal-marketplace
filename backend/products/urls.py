@@ -72,7 +72,7 @@ urlpatterns = [
        "products/<int:product_id>/reviews/add/",
         add_review
     ),
-
+    
     path(
        "reviews/<int:review_id>/update/",
         update_review
