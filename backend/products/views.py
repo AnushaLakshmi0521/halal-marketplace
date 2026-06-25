@@ -287,7 +287,8 @@ def verify_payment(request):
 
         # ✅ CALCULATE TOTAL
         total = sum(
-            item.product.price * item.quantity
+            (item.product.sale_price or item.product.price)
+            * item.quantity
             for item in cart_items
         )
 
@@ -315,15 +316,17 @@ def verify_payment(request):
         # ✅ CREATE ORDER ITEMS
         for item in cart_items:
 
-           OrderItem.objects.create(
+            OrderItem.objects.create(
             order=order,
             product=item.product,
             quantity=item.quantity,
-            price=item.product.price
-           )
+            price=item.product.sale_price
+            if item.product.discount_percent > 0
+            else item.product.price
+            )
 
-           item.product.stock_quantity -= item.quantity
-           item.product.save()
+            item.product.stock_quantity -= item.quantity
+            item.product.save()
 
         # ✅ CLEAR ONLY THIS USER CART
         cart_items.delete()

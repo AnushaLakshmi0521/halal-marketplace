@@ -259,7 +259,38 @@ function ProductDetail() {
           </span>
         </div>
 
-        <h2 className="price">₹ {product.price}</h2>
+        <h2 className="price">
+
+  {product.discount_percent > 0 ? (
+    <>
+      <span
+        style={{
+          textDecoration: "line-through",
+          color: "#999",
+          marginRight: "10px"
+        }}
+      >
+        ₹ {product.price}
+      </span>
+
+      <span style={{ color: "#16a34a" }}>
+        ₹ {product.sale_price}
+      </span>
+
+      <span
+        style={{
+          color: "red",
+          marginLeft: "10px"
+        }}
+      >
+        {product.discount_percent}% OFF
+      </span>
+    </>
+  ) : (
+    <>₹ {product.price}</>
+  )}
+
+</h2>
 
         <h3>⭐ {avg} ({reviews.length})</h3>
 

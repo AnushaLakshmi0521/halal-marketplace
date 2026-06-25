@@ -108,6 +108,12 @@ function Wishlist() {
               key={item.id}
               className="wishlistCard"
             >
+
+              {item.product_detail?.discount_percent > 0 && (
+  <div className="saleBadge">
+    {item.product_detail.discount_percent}% OFF
+  </div>
+)}
               <img
                 src={
                   item.product_detail?.image
@@ -135,9 +141,25 @@ function Wishlist() {
                   {item.product_detail?.description}
                 </p>
 
-                <p className="wishlistPrice">
-                  ₹ {item.product_detail?.price}
-                </p>
+                {item.product_detail?.discount_percent > 0 ? (
+  <>
+    <p className="wishlistOldPrice">
+      ₹ {item.product_detail?.price}
+    </p>
+
+    <p className="wishlistPrice">
+      ₹ {item.product_detail?.sale_price}
+    </p>
+
+    <p className="wishlistDiscount">
+      {item.product_detail?.discount_percent}% OFF
+    </p>
+  </>
+) : (
+  <p className="wishlistPrice">
+    ₹ {item.product_detail?.price}
+  </p>
+)}
 
                 <div className="wishlistActions">
                   <button

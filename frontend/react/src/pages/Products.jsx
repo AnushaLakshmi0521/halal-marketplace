@@ -340,8 +340,11 @@ function Products() {
                       {item.product_detail?.name}
                     </p>
                     <p className="cartPrice">
-                      ₹ {item.product_detail?.price}
-                    </p>
+  ₹ {
+    item.product_detail?.sale_price ||
+    item.product_detail?.price
+  }
+</p>
                   </div>
 
                   <div className="qtyBox">
@@ -409,15 +412,18 @@ function Products() {
               ))}
 
               <h3>
-                Total: ₹{" "}
-                {cart.reduce(
-                  (sum, item) =>
-                    sum +
-                    (item.product_detail?.price || 0) *
-                      item.quantity,
-                  0
-                )}
-              </h3>
+  Total: ₹{" "}
+  {cart.reduce(
+    (sum, item) =>
+      sum +
+      (
+        item.product_detail?.sale_price ||
+        item.product_detail?.price ||
+        0
+      ) * item.quantity,
+    0
+  )}
+</h3>
 
               <button
                 className="payBtn"

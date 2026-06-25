@@ -267,10 +267,14 @@ const buyNowItem = location.state?.buyNowItem;
   const items = buyNowItem ? [buyNowItem] : cart;
 
 const total = items.reduce((sum, item) => {
+
   const price =
-    item.product_detail?.price || 0;
+    item.product_detail?.discount_percent > 0
+      ? item.product_detail?.sale_price
+      : item.product_detail?.price;
 
   return sum + price * item.quantity;
+
 }, 0);
 
   const handleChange = (e) => {
@@ -679,10 +683,14 @@ const total = items.reduce((sum, item) => {
                 </span>
 
                 <span>
-                  {item.quantity}
-                  {" × ₹ "}
-                  {item.product_detail?.price}
-                </span>
+  {item.quantity}
+  {" × ₹ "}
+  {
+    item.product_detail?.discount_percent > 0
+      ? item.product_detail?.sale_price
+      : item.product_detail?.price
+  }
+</span>
 
               </div>
             ))}
